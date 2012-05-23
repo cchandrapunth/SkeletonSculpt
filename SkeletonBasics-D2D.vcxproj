@@ -22,6 +22,7 @@
     <ProjectGuid>{A0E290C0-197D-4659-A67A-D31BF9D56EAA}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>SkeletonBasics</RootNamespace>
+    <ProjectName>SkeletonSculpt</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
