@@ -1,14 +1,27 @@
 #include "stdafx.h"
-#include <stdio.h>
-#include <stdlib.h>
 #include "NuiApi.h"
 #include <GL/glut.h>
 
-
+#include "XnPoint3D.h"
+#include "picking.h"
+#include "hand_history.h"
+#include "window.h"
+#include "undo.h"
+#include "vertex.h"
+#include "vmmodel.h"
+#include "drawmodel.h"
+#include "paint.h"
+#include "drawbackground.h"
+#include "mode.h" 
+#include "display.h"
 float hand_l_x =0, hand_l_y =0, hand_l_z =0;
 float hand_r_x =0, hand_r_y =0, hand_r_z =0;
 FILE *pFile1;
 FILE *pFile2;
+
+bool selection = false;
+bool preview = false;
+static XnPoint3D *handPointList;
 
 bool bFoundSkeleton = false;
 int* m_depthRGBX;
@@ -21,59 +34,13 @@ static const int h = 800;
 static const int cDepthWidth  = 640;
 static const int cDepthHeight = 480;
 
+#define MAXPOINT 30000
 
-float z = -2.5;
-float bd = 1.9;
+//hands
+hand_h* rhand;
+hand_h* lhand;
 
-void draw_rect(float x1, float y1, float x2, float y2){
-	glBegin(GL_POLYGON);
-	glVertex3f(x1, y1, z-0.1);
-	glVertex3f(x2, y1, z-0.1);
-	glVertex3f(x2, y2, z-0.1);
-	glVertex3f(x1, y2, z-0.1);
-	glEnd();
-}
-
-void draw_line(float ax,float ay, float bx, float by){
-	glBegin(GL_LINES); 
-    glVertex3f( ax, ay, z); 
-    glVertex3f( bx, by, z); 
-    glEnd(); 
-}
-void draw_background(){
-	glDisable(GL_LIGHTING);
-	glEnable(GL_BLEND); 
-	glDisable(GL_CULL_FACE);
-	glDisable(GL_DEPTH_TEST);
-
-	glColor3f(0.5f, 0.5f, 0.5f);
-    draw_rect(-(bd+0.1), bd+0.1, bd+0.1, -(bd+0.1));
-
-	//scale
-	glColor3f(0.1, 0.1, 0.1);
-	draw_line(0, bd, 0, -bd);
-	draw_line(bd, 0, -bd, 0);
-
-	//grid
-	glColor3f(0.6, 0.6, 0.6);
-	for(int i=0; i<20;i ++){		
-		draw_line(-bd+(0.2*i), bd, -bd+(0.2*i), -bd);
-		draw_line(bd, -bd+(0.2*i), -bd, -bd+(0.2*i));
-	}
-	glDisable(GL_BLEND);
-	glEnable(GL_LIGHTING);
-	glEnable(GL_CULL_FACE);
-	glEnable(GL_DEPTH_TEST);//line shows more
-}
-
-
-
-void renderScene(void) {
-
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	
-	draw_background();
-	glLoadIdentity();
+void NUIhand(){
 
 	NuiSkeletonGetNextFrame( 0, &SkeletonFrame );
 
@@ -140,10 +107,7 @@ void renderScene(void) {
 		float handPixelX = (hand_r_x+0.5)* cDepthWidth;
 		float handPixelY = cDepthHeight- ((hand_r_y+0.5)* cDepthHeight);
 		int HANDRADIUS = 80; 
-		glColor3f(0, 1, 0);
-		glBegin(GL_POINTS);
-		glVertex3f(handPixelX/cDepthWidth*4 -2, -(handPixelY/cDepthHeight*4 -2), 0);
-		glEnd();
+		
 		glPointSize(2);
 		glColor3f(1, 0, 0);
 		glBegin(GL_POINTS);
@@ -189,7 +153,7 @@ void renderScene(void) {
 
 							fprintf(pFile2, "%f [%d, %d] [%.2f, %.2f] | %d\n", hand_r_z*1000,  nX, nY, handPixelX, handPixelY, depthint);
 
-							if(bFoundSkeleton) glVertex3f((((float)nX/cDepthWidth)*4)-2, -((((float)nY/cDepthHeight)*4)-2), 0);
+							if(bFoundSkeleton) glVertex3f((((float)nX/cDepthWidth)*4)-2, -((((float)nY/cDepthHeight)*4)-2), 3.0);
 
 						}
 
@@ -222,10 +186,35 @@ void renderScene(void) {
 		glColor3f(1, 1, 1);
 		glPointSize(8);
 		glBegin(GL_POINTS);
-		glVertex3f(hand_r_x*4, hand_r_y*4, 0);
+		glVertex3f(hand_r_x*4, hand_r_y*4, 3.0);
 		glEnd();
 	}
-	glutSwapBuffers();
+	//glutSwapBuffers();
+	glFlush();
+}
+
+void display(void) {
+
+	if(handPointList == NULL){
+		printf("error. can't allocate memory for handPointList");
+	}
+
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	if(!preview){
+		draw_background();
+
+		glLoadIdentity();
+		//UIhandler(); //check ui touch
+
+		//display
+		NUIhand();
+		mode_selection(handPointList, rhand, lhand);
+
+		
+	}else{
+		preview_scene();
+	}
+
 	glFlush();
 }
 
@@ -316,6 +305,15 @@ void initRender(){
 	glColorMaterial(GL_FRONT, GL_DIFFUSE);
 	glEnable(GL_COLOR_MATERIAL);
 
+	//new
+	import_vm();
+	copy_vmmodel();
+	findBoundingSphere();
+
+	handPointList = new XnPoint3D[MAXPOINT];
+	rhand = new hand_h();
+	lhand = new hand_h();
+
 	glEnable(GL_NORMALIZE);			//automatically rescale normal when transform the surface
 
 }
@@ -335,23 +333,87 @@ void reshape(int w, int h){
 	glLoadIdentity();
 }
 
+/***********************************************************
+					Mouse & Key control
+************************************************************/
 
-/******************************************************
+void mouse(int button, int state, int x, int y){
+
+	if (button != GLUT_LEFT_BUTTON || state != GLUT_DOWN) return;
+
+	//only when the left button is clicked 
+	set_cursor(x, y);
+	set_state(1);
+}
+
+void processNormalKeys(unsigned char key, int x, int y){
+	
+	if(key ==27){			//'esc' to exit
+		exit(0);
+	}
+	else if(key == 104){	//'h' to show handmap or palmpoint
+		//switchShowHand();
+	}
+	else if(key == 100){	//'d' to show front buffer or back bufferr
+		switch_buffer();
+		if(get_buffer()) printf("switch buffer to front\n");
+		else 	printf("switch buffer to back\n");
+	}
+	else if(key == 111) {//'o' to train value = open hand
+		//////////////set_print_training(2);
+	}
+
+	else if(key == 112) {// 'p' to train value = close hand
+		///////////////set_print_training(1);
+	}
+	else if(key == 49){ //'1' for rotate X
+			commitScene(-2, 0, 0);
+			recalNormal();
+	}
+	else if(key == 50){ //'2' for rotate y
+			commitScene(2, 0, 0);
+			recalNormal();
+	}
+	else if(key == 51){ //'3' for line effect
+			commitScene(0, -2, 0);
+			recalNormal();
+	}
+	else if(key == 52){ //'4' for line effect
+			commitScene(0, 2, 0);
+			recalNormal();
+	}
+	else if(key == 53){ //'5' for line effect
+			switchLine();
+	}
+	else if(key == 54){
+		preview = !preview;
+	}
+	else
+		printf("key: %d\n", key);
+}
+
+
+
+/***********************************************************
 					MAINLOOP
-******************************************************/
+************************************************************/
 int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow)
 {
-	NUIinit();
-	initRender();
 
 	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
 	glutInitWindowPosition(200, 0);
 	glutInitWindowSize(w,h);
 	glutCreateWindow("hello");
 
+	glutKeyboardFunc(processNormalKeys);
 	glutReshapeFunc(reshape);
-	glutDisplayFunc(renderScene);
-	glutIdleFunc(renderScene);
+	glutDisplayFunc(display);
+	glutIdleFunc(display);
+	glutMouseFunc(mouse);
+
+	NUIinit();
+	initRender();
+	createGLUTMenus();
 	glutMainLoop();
                       
 	return 0;

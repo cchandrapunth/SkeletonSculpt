@@ -163,13 +163,41 @@
     <None Include="app.ico" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="display.h" />
+    <ClInclude Include="drawbackground.h" />
+    <ClInclude Include="drawmodel.h" />
+    <ClInclude Include="hand_history.h" />
+    <ClInclude Include="log.h" />
+    <ClInclude Include="mesh.h" />
+    <ClInclude Include="mode.h" />
+    <ClInclude Include="paint.h" />
+    <ClInclude Include="picking.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="SkeletonBasics.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="undo.h" />
+    <ClInclude Include="vertex.h" />
+    <ClInclude Include="vmmodel.h" />
+    <ClInclude Include="window.h" />
+    <ClInclude Include="XnPoint3D.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="display.cpp" />
+    <ClCompile Include="drawbackground.cpp" />
+    <ClCompile Include="drawmodel.cpp" />
+    <ClCompile Include="hand_history.cpp" />
+    <ClCompile Include="log.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="mesh.cpp" />
+    <ClCompile Include="mode.cpp" />
+    <ClCompile Include="paint.cpp" />
+    <ClCompile Include="picking.cpp" />
     <ClCompile Include="SkeletonBasics.cpp" />
+    <ClCompile Include="undo.cpp" />
+    <ClCompile Include="vertex.cpp" />
+    <ClCompile Include="vmmodel.cpp" />
+    <ClCompile Include="window.cpp" />
+    <ClCompile Include="XnPoint3D.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="SkeletonBasics.rc" />

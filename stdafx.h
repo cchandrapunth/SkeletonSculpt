@@ -12,6 +12,8 @@
 
 // Windows Header Files
 #include <windows.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 #include <Shlobj.h>
 
