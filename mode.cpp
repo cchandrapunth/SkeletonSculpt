@@ -8,7 +8,7 @@ mode 2- painting
 mode 3- selection 
 *******************/
 
-static int modeid = 1; //defalt -sculpt
+static int modeid = 2; //defalt -sculpt
 static int stateid = 2; //defalt - render
 
 void set_mode(int i){

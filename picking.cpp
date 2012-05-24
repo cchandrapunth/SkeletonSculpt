@@ -19,7 +19,7 @@ void processPick(float cursorX, float cursorY){
 	glGetIntegerv(GL_VIEWPORT, viewport);
 
 	//read pixel under the curser
-	glReadPixels(cursorX, viewport[3]-cursorY, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, (void*) pixel);
+	glReadPixels(viewport[2]-cursorX, cursorY, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, (void*) pixel);
 
 	//printf("cursorX= %f, cursorY= %f\n", cursorX, viewport[3]-cursorY);
 	printf("%d %d %d\n", pixel[0], pixel[1], pixel[2]);

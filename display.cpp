@@ -47,7 +47,7 @@ void mode_selection(XnPoint3D* handPointList, hand_h* rhand){
 			cursorY = cursor[1];
 
 			drawPickVMModel();
-			////////processPick(cursorX, cursorY);
+			processPick(cursorX, cursorY);
 			set_state(2);	
 		}
 		//RENDER
@@ -78,7 +78,7 @@ void mode_selection(XnPoint3D* handPointList, hand_h* rhand){
 			cursorY = cursor[1];
 
 			drawPickVMModel();
-			///////processPick(cursorX, cursorY);
+			processPick(cursorX, cursorY);
 			set_state(2);
 		}
 		//RENDER
@@ -123,7 +123,7 @@ void mode_selection(XnPoint3D* handPointList, hand_h* rhand){
 
 //RIGHT HAND:: treat grab as a mouse click. 
 void checkRCursor(int func, hand_h* rhand){
-	/*
+	
 	if(isGrab()) {
 		rhand->storeHand(getPalm());		//keep the hand movement history
 
@@ -190,7 +190,6 @@ void checkRCursor(int func, hand_h* rhand){
 			if(func == 1) copy_vmmodel(); 
 		}
 	}
-	*/
 
 }
 

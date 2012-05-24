@@ -404,6 +404,19 @@ void draw_hand(XnPoint3D* handPointList)
 			//draw palm 
 			drawRHand(RGRAB, pt.X*4, pt.Y*4, pt.Z);
 		}
+		//else use the old gesture 
+		else{
+			//set color for each person
+			int nColor = 2;
+			glPointSize(8);
+			glColor4f(Colors[nColors][0],
+				Colors[nColors][1],
+				Colors[nColors][2],
+				1.0f);
+
+			//draw palm 
+			drawRHand(RGRAB, pt.X*4, pt.Y*4, pt.Z);
+		}
 	}
 
 	glEnable(GL_LIGHTING);
@@ -545,8 +558,7 @@ int draw_map(XnPoint3D* handPointList, XnPoint3D palm){
 							//fprintf(pFile2, "palm: %f |\t pixel= [%d, %d, %d]\n", palm.Z*1000,  nX, nY, depthint);
 							//fprintf(pFile2, "*");
 
-							////////////SHOWHAND??
-							if(bFoundSkeleton){
+							//if(bFoundSkeleton){
 								if(SHOWHAND)
 									glVertex3f(convertX(nX), convertY(nY), 3.0f);
 									//glVertex3f((((float)nX/cDepthWidth)*4)-2, -((((float)nY/cDepthHeight)*4)-2), 3.0);
@@ -558,7 +570,7 @@ int draw_map(XnPoint3D* handPointList, XnPoint3D palm){
 			
 								handPointList[n] = *p;
 								n++;
-							}
+							//}
 						}
 						//else fprintf(pFile2, "-");
 
