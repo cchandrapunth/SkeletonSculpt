@@ -23,10 +23,9 @@ void smoothHand(int i){
 }
 
 bool isGrabsmooth(){
-	//find everage 
+	//find average 
 
 	int sum =0, count = 0;
-
 
 	std::list<int>::const_iterator grabIterator;
 	for (grabIterator = smoothlist.begin();

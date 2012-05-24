@@ -19,3 +19,6 @@ void drawSelection();
 
 //preview 
 void preview_scene();
+
+//return where the hand is [pixel]
+float* getCursor();

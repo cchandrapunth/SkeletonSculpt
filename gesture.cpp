@@ -330,10 +330,13 @@ void extract_Skeleton(){
 
 			//store palm pos to use as a cursor in display
 			//convert to estimated pixel 
-			//depthmap return [-1, 1]
+			//depthmap return [-0.5, 0.5]
+			///////////////////////////////////////////////////////////////////
 			XnPoint3D* ptResolution = new XnPoint3D();
-			ptResolution->X = (ptProjective->X+1)* cDepthWidth/2;
-			ptResolution->Y = (ptProjective->Y+1)* cDepthHeight/2;
+			//ptResolution->X = (ptProjective->X+1)* cDepthWidth/2;
+			//ptResolution->Y = (ptProjective->Y+1)* cDepthHeight/2;
+			ptResolution->X = (ptProjective->X+0.5);
+			ptResolution->Y = (ptProjective->Y+0.5);
 			ptResolution->Z = ptProjective->Z*1000; 
 			RpalmPos = *ptResolution;
 
