@@ -335,7 +335,6 @@ void extract_Skeleton(){
 			ptResolution->X = (ptProjective->X+1)* cDepthWidth/2;
 			ptResolution->Y = (ptProjective->Y+1)* cDepthHeight/2;
 			ptResolution->Z = ptProjective->Z*1000; 
-
 			RpalmPos = *ptResolution;
 
 			if (ptProjective->Z!=0 ) 
@@ -345,7 +344,7 @@ void extract_Skeleton(){
 				if (m_History.size() > m_nHistorySize)
 					m_History.pop_back();
 
-
+				
 				fprintf(pFile1, "HandRight X=%4.2f  Y=%4.2f  Z=%4.2f  | convert %.1f %.1f \n",ptProjective->X,ptProjective->Y,ptResolution->Z, 
 																	ptResolution->X, ptResolution->Y);    
 			

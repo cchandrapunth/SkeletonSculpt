@@ -8,6 +8,7 @@
 #include "hand_history.h"
 #include "window.h"
 #include "undo.h"
+#include "ui.h"
 #include "vertex.h"
 #include "vmmodel.h"
 #include "drawmodel.h"
@@ -18,24 +19,31 @@
 //float hand_l_x =0, hand_l_y =0, hand_l_z =0;
 //float hand_r_x =0, hand_r_y =0, hand_r_z =0;
 
-
+ui *Master_ui =new ui();
 bool selection = false;
 bool preview = false;
 static XnPoint3D *handPointList;
 
-
-
-
-
-
 static const int w = 800;
 static const int h = 800;
 
-
 #define MAXPOINT 30000
+
+//viewport
+float zNear;
+float zFar; 
+GLdouble left; 
+GLdouble right;
+GLdouble bottom; 
+GLdouble top; 
 
 hand_h* rhand;
 hand_h* lhand;
+
+//signature
+void UIhandler();
+
+
 
 void NUIhand(){
 	/*
@@ -201,7 +209,7 @@ void display(void) {
 		draw_background();
 
 		glLoadIdentity();
-		//UIhandler(); //check ui touch
+		UIhandler(); //check ui touch
 
 		//display
 		//NUIhand();
@@ -270,6 +278,8 @@ void reshape(int w, int h){
 	glLoadIdentity(); 
 
 	glOrtho(-2, 2, -2, 2,-5, 100);
+	
+	gluLookAt(0, 0, 1, 0, 0, 0, 0, 1, 0);
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -334,7 +344,93 @@ void processNormalKeys(unsigned char key, int x, int y){
 		printf("key: %d\n", key);
 }
 
+/**********************************************************
+				MENU
+**********************************************************/
+//-----------------push menu-------------------
+//sculpting
+void option1(){
+	set_mode(1);
+	Master_ui->remove_menu();
+}
+//paint brush
+void option2(){
+	set_mode(2);
+	Master_ui->remove_menu();
 
+	float width = right -left;
+	float height = top -bottom; 
+	float off = height/80;
+
+	Master_ui->add_button("red", left+ width/15, top-height/12, width/12, height/12-off, setRed);	//red
+	Master_ui->add_button("green", left+ width/15, top-height*2/12, width/12, height/12-off, setGreen);	//green
+	Master_ui->add_button("blue", left+ width/15, top-height*3/12, width/12, height/12-off, setBlue);	//blue
+	Master_ui->add_button("yellow", left+ width/15, top-height*4/12, width/12, height/12-off, setYellow);	//yellow
+	Master_ui->add_button("white", left+ width/15, top-height*5/12, width/12, height/12-off, setWhite);	//white
+	Master_ui->add_button("black", left+ width/15, top-height*6/12, width/12, height/12-off, setBlack);	//black
+}
+//selection?
+void option3(){
+	set_mode(3);
+	Master_ui->remove_menu();
+}
+
+void up(){
+	if(is_mode(1)) upEffect();
+	else upBrush();
+}
+
+void down(){
+	if(is_mode(1)) downEffect();
+	else downBrush();
+}
+
+//reload model
+void reload(){
+	import_vm();
+}
+
+void UIhandler(){
+	Master_ui->check_click(convertX(getPalm().X), convertY(getPalm().Y));
+}
+
+void push_menu(){
+	//draw panel 
+	Master_ui->activate_menu = true; //addpanel
+	printf("pushing menu\n");
+
+	float width = right -left;
+	float height = top -bottom; 
+	float off = width/20;
+
+	Master_ui->add_button("Sculpt", left+ width*1/4, bottom+height/3, width/4-off, height/3, option1);
+	Master_ui->add_button("Paint", left+ width*2/4, bottom+height/3, width/4-off, height/3, option2);
+	//Master_ui->add_button("Slice", left+ width*3/5, bottom+height/3, width/5-off, height/3, option3);
+}
+
+//all ui in here
+void uiInit(){
+
+	vertex c = getCenter();
+	float diam = getDiam();
+
+	zNear = -5;
+    zFar = 100;
+	left = c.x - diam;
+    right = c.x + diam;
+    bottom = c.y - diam;
+    top = c.y + diam;
+
+	//main menu button
+	Master_ui->add_button("Menu", left+(right-left)/15, bottom+0.5, 0.5, 0.3, push_menu);
+	Master_ui->add_button("-", left+(right-left)/15, bottom+0.8, 0.3, 0.3, down);
+	Master_ui->add_button("+", left+(right-left)/15, bottom+1.1, 0.3, 0.3, up);
+
+	//Master_ui->add_button("reset", right-(right-left)/5, bottom+0.5, 0.5, 0.3, reload);	//if remove, fix ui.cpp (count)
+	//Master_ui->add_button("select", right-(right-left)/5, bottom+0.8, 0.5, 0.3, selectionMode);
+	Master_ui->add_button("rotate", right-(right-left)/5, bottom+0.8, 0.5, 0.3, activate_rotate);
+	Master_ui->add_button("undo", right-(right-left)/5, bottom+1.1, 0.5, 0.3, undo_vmmodel);
+}
 
 /***********************************************************
 					MAINLOOP
@@ -355,6 +451,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 
 	NUIinit();
 	initRender();
+	uiInit();
 	createGLUTMenus();
 	glutMainLoop();
                       

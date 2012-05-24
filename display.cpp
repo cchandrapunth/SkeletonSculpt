@@ -191,6 +191,7 @@ void checkRCursor(int func, hand_h* rhand){
 		}
 	}
 
+
 }
 
 //LEFT HAND:: handle rotation
@@ -246,6 +247,8 @@ float* getCursor(){
 	float* c = (float*) malloc(sizeof(float)*2);
 	c[0] = (g_nXRes-getPalm().X)*w/g_nXRes;
 	c[1] = getPalm().Y*h/g_nYRes;
+	//c[0] = (w- getPalm().X)/w;
+	//c[1] = getPalm().Y/h;
 	return c;
 	
 	return 0;

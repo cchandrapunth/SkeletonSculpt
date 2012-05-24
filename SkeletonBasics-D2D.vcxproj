@@ -179,6 +179,8 @@
     <ClInclude Include="SkeletonBasics.h" />
     <ClInclude Include="smoothing.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="ui.h" />
+    <ClInclude Include="ui_button.h" />
     <ClInclude Include="undo.h" />
     <ClInclude Include="vertex.h" />
     <ClInclude Include="vmmodel.h" />
@@ -201,6 +203,8 @@
     <ClCompile Include="picking.cpp" />
     <ClCompile Include="SkeletonBasics.cpp" />
     <ClCompile Include="smoothing.cpp" />
+    <ClCompile Include="ui.cpp" />
+    <ClCompile Include="ui_button.cpp" />
     <ClCompile Include="undo.cpp" />
     <ClCompile Include="vertex.cpp" />
     <ClCompile Include="vmmodel.cpp" />
