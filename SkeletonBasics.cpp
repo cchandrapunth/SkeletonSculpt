@@ -9,7 +9,6 @@
 #include "SkeletonBasics.h"
 #include "resource.h"
 
-FILE *pFile;
 
 
 static const float g_JointThickness = 3.0f;
@@ -47,7 +46,7 @@ CSkeletonBasics::CSkeletonBasics() :
     m_pNuiSensor(NULL)
 {
     ZeroMemory(m_Points,sizeof(m_Points));
-	pFile = fopen("hand.txt", "w");	
+
 }
 
 /// <summary>
@@ -354,7 +353,7 @@ void CSkeletonBasics::ProcessSkeleton()
 			float hand_r_y=skeletonFrame.SkeletonData[1].SkeletonPositions[NUI_SKELETON_POSITION_HAND_RIGHT].y;
 			float hand_r_z=skeletonFrame.SkeletonData[1].SkeletonPositions[NUI_SKELETON_POSITION_HAND_RIGHT].z;
 
-			fprintf(pFile, "HandRight X=%4.2f  HandRight Y=%4.2f   HandRight Z=%4.2f    \n",hand_r_x, hand_r_y, hand_r_z);  
+			//fprintf(pFile, "HandRight X=%4.2f  HandRight Y=%4.2f   HandRight Z=%4.2f    \n",hand_r_x, hand_r_y, hand_r_z);  
 
 		}
         else if (NUI_SKELETON_POSITION_ONLY == trackingState)

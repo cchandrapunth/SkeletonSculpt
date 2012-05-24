@@ -165,15 +165,19 @@
   <ItemGroup>
     <ClInclude Include="display.h" />
     <ClInclude Include="drawbackground.h" />
+    <ClInclude Include="drawhand.h" />
     <ClInclude Include="drawmodel.h" />
+    <ClInclude Include="gesture.h" />
     <ClInclude Include="hand_history.h" />
     <ClInclude Include="log.h" />
     <ClInclude Include="mesh.h" />
     <ClInclude Include="mode.h" />
     <ClInclude Include="paint.h" />
+    <ClInclude Include="Pair.h" />
     <ClInclude Include="picking.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="SkeletonBasics.h" />
+    <ClInclude Include="smoothing.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="undo.h" />
     <ClInclude Include="vertex.h" />
@@ -184,15 +188,19 @@
   <ItemGroup>
     <ClCompile Include="display.cpp" />
     <ClCompile Include="drawbackground.cpp" />
+    <ClCompile Include="drawhand.cpp" />
     <ClCompile Include="drawmodel.cpp" />
+    <ClCompile Include="gesture.cpp" />
     <ClCompile Include="hand_history.cpp" />
     <ClCompile Include="log.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mesh.cpp" />
     <ClCompile Include="mode.cpp" />
     <ClCompile Include="paint.cpp" />
+    <ClCompile Include="Pair.cpp" />
     <ClCompile Include="picking.cpp" />
     <ClCompile Include="SkeletonBasics.cpp" />
+    <ClCompile Include="smoothing.cpp" />
     <ClCompile Include="undo.cpp" />
     <ClCompile Include="vertex.cpp" />
     <ClCompile Include="vmmodel.cpp" />

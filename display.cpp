@@ -3,7 +3,7 @@
 #include "XnPoint3D.h"
 #include "mode.h"
 #include "picking.h"
-//#include "gesture.h"
+#include "gesture.h"
 #include "drawmodel.h"
 #include "hand_history.h"
 #include "vertex.h"
@@ -12,7 +12,7 @@
 #include "paint.h"
 
 //resolution
-static int g_nXRes, g_nYRes;
+static int g_nXRes = 640, g_nYRes = 480;
 static int h=800, w= 800;
 static float cursorX, cursorY; 
 
@@ -31,23 +31,20 @@ bool isRotate(){
 }
 
 /* Select from 3 available modes and process accordingly */
-void mode_selection(XnPoint3D* handPointList, hand_h* rhand, hand_h* lhand){
+void mode_selection(XnPoint3D* handPointList, hand_h* rhand){
 
 	//-------------------sculpting--------------------------
 	if(is_mode(1)){
-		if(switchHand){
-			checkLCursor(rhand);
-		}
-		else{
-			checkRCursor(1, rhand);					//right
-			//if(hasTwoHands()) checkLCursor(lhand);	//left
-		}
+	
+		checkRCursor(1, rhand);						//right
+		//if(hasTwoHands()) checkLCursor(lhand);	//left
+		
 
 		//SELECTION
 		if(is_state(1)){	
-			////////float* cursor = getCursor();
-			////////cursorX = cursor[0];
-			////////cursorY = cursor[1];
+			float* cursor = getCursor();
+			cursorX = cursor[0];
+			cursorY = cursor[1];
 
 			drawPickVMModel();
 			////////processPick(cursorX, cursorY);
@@ -55,8 +52,7 @@ void mode_selection(XnPoint3D* handPointList, hand_h* rhand, hand_h* lhand){
 		}
 		//RENDER
 		else {
-			//////////////////////////////////////////***in gesture////////////////////////////////
-			//draw_hand(handPointList);	//draw every hands
+			draw_hand(handPointList);	//draw every hands
 			
 			//show back buffer?
 			if(!BACK_BUFF){
@@ -73,14 +69,13 @@ void mode_selection(XnPoint3D* handPointList, hand_h* rhand, hand_h* lhand){
 	//-------------------paint----------------------------
 	else if(is_mode(2)) {
 		checkRCursor(2, rhand); 
-		//if(hasTwoHands()) checkLCursor(lhand); 
 
 		//SELECTION
 		if(is_state(1)){
 			//update cursor for paint effect
-			///////float* cursor = getCursor();
-			//////cursorX = cursor[0];
-			//////cursorY = cursor[1];
+			float* cursor = getCursor();
+			cursorX = cursor[0];
+			cursorY = cursor[1];
 
 			drawPickVMModel();
 			///////processPick(cursorX, cursorY);
@@ -89,7 +84,7 @@ void mode_selection(XnPoint3D* handPointList, hand_h* rhand, hand_h* lhand){
 		//RENDER
 		else {
 			//////////////////////////////////////////////////** in gesture////////////////
-			//draw_hand(handPointList);
+			draw_hand(handPointList);
 
 			
 			if(!BACK_BUFF)
@@ -105,7 +100,6 @@ void mode_selection(XnPoint3D* handPointList, hand_h* rhand, hand_h* lhand){
 	//------------------ Selection ------------------------
 	else if(is_mode(3)) {
 		checkRCursor(3, rhand);
-		//if(hasTwoHands()) checkLCursor(lhand); 
 		
 		 if(is_state(1)){
 			drawPickVMModel();
@@ -114,7 +108,7 @@ void mode_selection(XnPoint3D* handPointList, hand_h* rhand, hand_h* lhand){
 		}
 		else {
 			//////////////////////////////////////////////////** in gesture////////////////
-			//draw_hand(handPointList);
+			draw_hand(handPointList);
 			if(!BACK_BUFF)
 				drawVMModel();
 			else drawPickVMModel();
@@ -237,11 +231,6 @@ void preview_scene(){
 }
 
 
-void set_nRes(int XRes, int YRes){
-	g_nXRes = XRes;
-	g_nYRes = YRes;
-}
-
 void set_cursor(float x, float y){
 	cursorX = x;
 	cursorY = y;
@@ -254,12 +243,12 @@ bool get_buffer(){
 }
 
 float* getCursor(){
-	/*
+	
 	float* c = (float*) malloc(sizeof(float)*2);
 	c[0] = (g_nXRes-getPalm().X)*w/g_nXRes;
 	c[1] = getPalm().Y*h/g_nYRes;
 	return c;
-	*/
+	
 	return 0;
 }
 

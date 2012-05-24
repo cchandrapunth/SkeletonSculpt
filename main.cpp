@@ -1,9 +1,10 @@
 #include "stdafx.h"
-#include "NuiApi.h"
-#include <GL/glut.h>
 
+#include <GL/glut.h>
+#include "NuiApi.h"
 #include "XnPoint3D.h"
 #include "picking.h"
+#include "gesture.h"
 #include "hand_history.h"
 #include "window.h"
 #include "undo.h"
@@ -14,34 +15,30 @@
 #include "drawbackground.h"
 #include "mode.h" 
 #include "display.h"
-float hand_l_x =0, hand_l_y =0, hand_l_z =0;
-float hand_r_x =0, hand_r_y =0, hand_r_z =0;
-FILE *pFile1;
-FILE *pFile2;
+//float hand_l_x =0, hand_l_y =0, hand_l_z =0;
+//float hand_r_x =0, hand_r_y =0, hand_r_z =0;
+
 
 bool selection = false;
 bool preview = false;
 static XnPoint3D *handPointList;
 
-bool bFoundSkeleton = false;
-int* m_depthRGBX;
-HANDLE		m_pDepthStreamHandle;
-const NUI_IMAGE_FRAME *imageFrame;
-NUI_SKELETON_FRAME SkeletonFrame;
+
+
+
+
 
 static const int w = 800;
 static const int h = 800;
-static const int cDepthWidth  = 640;
-static const int cDepthHeight = 480;
+
 
 #define MAXPOINT 30000
 
-//hands
 hand_h* rhand;
 hand_h* lhand;
 
 void NUIhand(){
-
+	/*
 	NuiSkeletonGetNextFrame( 0, &SkeletonFrame );
 
 	// smooth out the skeleton data
@@ -52,11 +49,10 @@ void NUIhand(){
 
 	bFoundSkeleton = false;
 
-	for( int i = 0 ; i < NUI_SKELETON_COUNT ; i++ )//////////////////hier werden mehrere Skeletons abgefragt!!!!!!!!!!!!!!!
+	for( int i = 0 ; i < NUI_SKELETON_COUNT ; i++ )
 	{
 
-		////////////////////////hier wird nur ein skeleton abgefragt!!!!!!!
-		if( SkeletonFrame.SkeletonData[i].eTrackingState == NUI_SKELETON_TRACKED )////////////////prüft ob skeletondaten verfügbar sind
+		if( SkeletonFrame.SkeletonData[i].eTrackingState == NUI_SKELETON_TRACKED )
 		{
 			bFoundSkeleton = true;
 
@@ -80,8 +76,8 @@ void NUIhand(){
 
 		}        
 	}
-
-
+	*/
+	/*
 	//image
 	HRESULT hr = NuiImageStreamGetNextFrame(m_pDepthStreamHandle, 0, &imageFrame);
 	if (FAILED(hr))
@@ -139,7 +135,7 @@ void NUIhand(){
 
 						// Write out red byte
 						*(rgbrun++) = intensity;
-						*/
+						
 
 						*(rgbrun++) = depth;
 
@@ -191,6 +187,7 @@ void NUIhand(){
 	}
 	//glutSwapBuffers();
 	glFlush();
+	*/	
 }
 
 void display(void) {
@@ -207,8 +204,8 @@ void display(void) {
 		//UIhandler(); //check ui touch
 
 		//display
-		NUIhand();
-		mode_selection(handPointList, rhand, lhand);
+		//NUIhand();
+		mode_selection(handPointList, rhand);
 
 		
 	}else{
@@ -216,61 +213,6 @@ void display(void) {
 	}
 
 	glFlush();
-}
-
-
-int x;
-int null = 0;
-int m_eins = 1; 
-HRESULT hr = S_OK;
-int nCount = 0;
-
-
-HANDLE        m_hNextDepthFrameEvent;
-HANDLE        m_hNextVideoFrameEvent;
-HANDLE        m_hNextSkeletonEvent;
-
-HANDLE        m_pVideoStreamHandle;
-
-
-/**********************************************************
-						Initialize
-***********************************************************/
-int NUIinit()
-{
-	hr = NuiInitialize( NUI_INITIALIZE_FLAG_USES_DEPTH | NUI_INITIALIZE_FLAG_USES_SKELETON | NUI_INITIALIZE_FLAG_USES_COLOR);
-	if( FAILED( hr ) )
-	{
-		//printf ("nicht initialisiert!! KINECT verbunden? \n");
-		system("pause");
-
-	}
-	else
-	{ 
-		// m_hNextSkeletonEvent = NULL;
-		//m_hNextSkeletonEvent = CreateEvent( NULL, TRUE, FALSE, NULL );
-
-		NUI_SKELETON_FRAME SkeletonFrame;
-		NuiSkeletonTrackingEnable;
-
-		//NuiSkeletonTrackingEnable( m_hNextSkeletonEvent, 0 );
-
-		hr = NuiImageStreamOpen(
-			NUI_IMAGE_TYPE_DEPTH,
-			NUI_IMAGE_RESOLUTION_640x480,
-			0,
-			2,
-			m_hNextDepthFrameEvent,
-			&m_pDepthStreamHandle);
-
-		m_depthRGBX = new int[cDepthWidth*cDepthHeight];
-
-	}
-
-	pFile1 = fopen("newhand.txt", "w");	
-	pFile2 = fopen("depthmap.txt", "w");
-
-	return 0;
 }
 
 void initRender(){
@@ -352,7 +294,7 @@ void processNormalKeys(unsigned char key, int x, int y){
 		exit(0);
 	}
 	else if(key == 104){	//'h' to show handmap or palmpoint
-		//switchShowHand();
+		switchShowHand();
 	}
 	else if(key == 100){	//'d' to show front buffer or back bufferr
 		switch_buffer();
