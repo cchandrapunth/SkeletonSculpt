@@ -47,6 +47,7 @@ float convertPalmPixelY(float py);
 void set_print_training(bool g);
 void setAspect(float asp);
 float getAspect();
+void analyse_histogram();
 
 ///helper
 bool hasTwoHands();

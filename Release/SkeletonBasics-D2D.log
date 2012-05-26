@@ -1,25 +1,28 @@
-﻿Build started 5/26/2012 12:31:48 AM.
+﻿Build started 5/26/2012 2:09:40 PM.
      1>Project "C:\Users\chan3\Documents\Visual Studio 2010\Projects\SkeletonSculpt\SkeletonBasics-D2D.vcxproj" on node 2 (build target(s)).
      1>InitializeBuildStatus:
-         Creating "Release\SkeletonSculpt.unsuccessfulbuild" because "AlwaysCreate" was specified.
+         Touching "Release\SkeletonSculpt.unsuccessfulbuild".
        ClCompile:
-         c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _WINDOWS /D _UNICODE /D UNICODE /Gm- /EHsc /MT /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt gesture.cpp
+         c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _WINDOWS /D _UNICODE /D UNICODE /Gm- /EHsc /MT /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt display.cpp drawhand.cpp gesture.cpp main.cpp
+         display.cpp
+         drawhand.cpp
          gesture.cpp
-     1>gesture.cpp(294): warning C4551: function call missing argument list
-     1>gesture.cpp(311): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-                 c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include\stdio.h(234) : see declaration of 'fopen'
-     1>gesture.cpp(312): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-                 c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include\stdio.h(234) : see declaration of 'fopen'
+     1>gesture.cpp(296): warning C4551: function call missing argument list
      1>gesture.cpp(313): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include\stdio.h(234) : see declaration of 'fopen'
-     1>gesture.cpp(293): warning C4101: 'SkeletonFrame' : unreferenced local variable
-     1>gesture.cpp(397): warning C4101: 'm_pfPositionBuffer' : unreferenced local variable
-     1>gesture.cpp(450): warning C4101: 'nX' : unreferenced local variable
-     1>gesture.cpp(450): warning C4101: 'nY' : unreferenced local variable
-     1>gesture.cpp(750): warning C4101: 'nX' : unreferenced local variable
-     1>gesture.cpp(750): warning C4101: 'nY' : unreferenced local variable
-     1>gesture.cpp(806): warning C4101: 'nX' : unreferenced local variable
-     1>gesture.cpp(806): warning C4101: 'nY' : unreferenced local variable
+     1>gesture.cpp(314): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include\stdio.h(234) : see declaration of 'fopen'
+     1>gesture.cpp(315): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include\stdio.h(234) : see declaration of 'fopen'
+     1>gesture.cpp(295): warning C4101: 'SkeletonFrame' : unreferenced local variable
+     1>gesture.cpp(401): warning C4101: 'm_pfPositionBuffer' : unreferenced local variable
+     1>gesture.cpp(455): warning C4101: 'nX' : unreferenced local variable
+     1>gesture.cpp(455): warning C4101: 'nY' : unreferenced local variable
+     1>gesture.cpp(802): warning C4101: 'nX' : unreferenced local variable
+     1>gesture.cpp(802): warning C4101: 'nY' : unreferenced local variable
+     1>gesture.cpp(858): warning C4101: 'nX' : unreferenced local variable
+     1>gesture.cpp(858): warning C4101: 'nY' : unreferenced local variable
+         main.cpp
        ResourceCompile:
          All outputs are up-to-date.
        Link:
@@ -58,4 +61,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:03.21
+Time Elapsed 00:00:04.86

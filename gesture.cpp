@@ -44,6 +44,8 @@ int len[100];	//length
 static std::list<XnPoint3D> m_History;	//hand history 
 static XnPoint3D w_History;  //wrist history
 
+//histogram 
+int *histogram;
 
 static std::list<int> handId;
 int prime_id = 0;
@@ -84,8 +86,8 @@ float getAspect(){
 }
 
 void set_print_training(bool g){
-	if(g)	fprintf(pFile, "GRAB\n");
-	else	fprintf(pFile, "release\n");
+	if(!g)	fprintf(pFile2, "********************GRAB\n");
+	else	fprintf(pFile2, "*********************release\n");
 }
 
 bool hasTwoHands(){
@@ -304,13 +306,15 @@ int NUIinit()
 			&m_pDepthStreamHandle);
 
 		m_depthRGBX = new int[cDepthWidth*cDepthHeight];
-
+		histogram = new int[100];
 	}
 
 	//debuging
 	pFile = fopen("depthmap.txt", "w");	
 	pFile1 = fopen("newhand.txt", "w");	
 	pFile2 = fopen("depthdata.txt", "w");
+
+	
 	return 0;
 }
 
@@ -410,7 +414,8 @@ void draw_hand(XnPoint3D* handPointList)
 
 		//predict
 		if(hpoint > 0){
-			predict_gesture(handPointList, pt, hpoint);
+			//predict_gesture(handPointList, pt, hpoint);
+			analyse_histogram();
 
 			//set color for each person
 			int nColor = 2;
@@ -460,7 +465,7 @@ int draw_map(XnPoint3D* handPointList, XnPoint3D palm){
 	//////////////////////////////////////////////
 	//change here to show effect grab
 	if(!RGRAB) glColor3f(1, 0, 0);
-	else glColor3f(1, 0.0, 0.0);
+	else glColor3f(0, 1.0, 0.0);
 
 	//image
 	HRESULT hr = NuiImageStreamGetNextFrame(m_pDepthStreamHandle, 0, &imageFrame);
@@ -487,27 +492,30 @@ int draw_map(XnPoint3D* handPointList, XnPoint3D palm){
 	glPointSize(2);
 
 
-
 	XnPoint3D *p = new XnPoint3D;
 	boolean draw  = false; 
 	// Make sure we've received valid data
 
+	//refresh histogram 
+	for(int i=0; i< 100; i++){
+		histogram[i] = 0;
+	}
 
-
+	int min = (palm.Z*1000) -60;
+	int max = (palm.Z*1000) +40;
 	if (LockedRect.Pitch != 0)
 	{
 
 		int* rgbrun = m_depthRGBX;
 		const USHORT * pBufferRun = (const USHORT *)LockedRect.pBits;
-
-		// end pixel is start + width*height - 1
-		const USHORT * pBufferEnd = pBufferRun + (cDepthWidth * cDepthHeight);
+		
 
 		float handPixelX = convertPalmPixelX(palm.X);
 		float handPixelY = convertPalmPixelY(palm.Y);
 		float wristPixelY = convertPalmPixelY(w_History.Y);
 		//restart the counting
 		n = 0;
+
 
 		glPointSize(2);
 		glColor3f(1, 0, 0);
@@ -526,16 +534,16 @@ int draw_map(XnPoint3D* handPointList, XnPoint3D palm){
 						//get player index 
 						USHORT player = NuiDepthPixelToPlayerIndex(*pBufferRun);
 
-						*(rgbrun++) = depth;
+						//*(rgbrun++) = depth;
 
 						//fnd depth
 						int depthint = (int) depth;
-						int min = (palm.Z*1000) -70;
-						int max = (palm.Z*1000) +70;
+
 
 						////////////////////////////////////////////////////////////////
 						//check depth 
-						if(depth > min && depth <  max){
+						//bound to 100 mm
+						if(depth >= min && depth <  max){
 
 							//fprintf(pFile2, "palm: %f |\t pixel= [%d, %d, %d]\n", palm.Z*1000,  nX, nY, depthint);
 							//fprintf(pFile2, "*");
@@ -555,6 +563,9 @@ int draw_map(XnPoint3D* handPointList, XnPoint3D palm){
 							handPointList[n].Y = nY;
 							handPointList[n].Z = depth;
 							n++;
+
+							//add to histogram 
+							histogram[depthint-min]++;
 							
 						}//else fprintf(pFile2, "-");
 				}
@@ -575,11 +586,52 @@ int draw_map(XnPoint3D* handPointList, XnPoint3D palm){
 
 	// Release the frame
 	NuiImageStreamReleaseFrame(m_pDepthStreamHandle, imageFrame);
+	//fprintf(pFile2, "hand: %f, %f, %f\n", palm.X, palm.Y, palm.Z);
+	//draw histogram
+	/*
+	for(int i=0; i< 99; i+=2){
+		int count = (histogram[i]+ histogram[i+1])/10;
+		fprintf(pFile2, "%d\t", min+i);
+		for(int j=0; j< count; j++){
+			fprintf(pFile2, "|");
+		}
+		fprintf(pFile2, " %d\n", count);
+	}
+	*/
+	/*
+	int count1 =0, count2 =0; 
+	for(int i=0; i< 30; i++){
+		count1+= histogram[i];	//first proportion 
+		count2+= histogram[30+i];	//second proportion
+	}
 
+	if(count2 != 0){
+		fprintf(pFile2, "c1: %d | c2: %d | percent: %.1f\n", count1, count2, ((float)count1)/count2*100);
+	}
+	*/
 
+	
 	return n;
 }
 
+void analyse_histogram(){
+	int peek = 0; 
+	//what's the peek? 
+	for(int i=0; i< 99; i+=2){
+		int count = (histogram[i]+ histogram[i+1])/10;
+		if(count > peek) peek = count;
+	}
+
+	fprintf(pFile2, "peek: %d\n", peek);
+	
+	if(peek  < 40){
+		smoothHand(true);
+		RGRAB = isGrabsmooth();
+	}else {
+		smoothHand(false);
+		RGRAB = isGrabsmooth();
+	}
+}
 //use svm prediction for gesture prediction
 void predict_gesture(XnPoint3D* handPointList, XnPoint3D palm, int n){
 
