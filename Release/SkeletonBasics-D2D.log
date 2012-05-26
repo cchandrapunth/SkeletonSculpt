@@ -1,0 +1,61 @@
+﻿Build started 5/25/2012 8:56:49 PM.
+     1>Project "C:\Users\chan3\Documents\Visual Studio 2010\Projects\SkeletonSculpt\SkeletonBasics-D2D.vcxproj" on node 2 (build target(s)).
+     1>InitializeBuildStatus:
+         Creating "Release\SkeletonSculpt.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _WINDOWS /D _UNICODE /D UNICODE /Gm- /EHsc /MT /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt gesture.cpp
+         gesture.cpp
+     1>gesture.cpp(290): warning C4551: function call missing argument list
+     1>gesture.cpp(307): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include\stdio.h(234) : see declaration of 'fopen'
+     1>gesture.cpp(308): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include\stdio.h(234) : see declaration of 'fopen'
+     1>gesture.cpp(309): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include\stdio.h(234) : see declaration of 'fopen'
+     1>gesture.cpp(289): warning C4101: 'SkeletonFrame' : unreferenced local variable
+     1>gesture.cpp(385): warning C4101: 'm_pfPositionBuffer' : unreferenced local variable
+     1>gesture.cpp(438): warning C4101: 'nX' : unreferenced local variable
+     1>gesture.cpp(438): warning C4101: 'nY' : unreferenced local variable
+     1>gesture.cpp(731): warning C4101: 'nX' : unreferenced local variable
+     1>gesture.cpp(731): warning C4101: 'nY' : unreferenced local variable
+     1>gesture.cpp(787): warning C4101: 'nX' : unreferenced local variable
+     1>gesture.cpp(787): warning C4101: 'nY' : unreferenced local variable
+       ResourceCompile:
+         All outputs are up-to-date.
+       Link:
+         c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\chan3\Documents\Visual Studio 2010\Projects\SkeletonSculpt\Release\SkeletonSculpt.exe" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib Kinect10.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Release\SkeletonSculpt.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Users\chan3\Documents\Visual Studio 2010\Projects\SkeletonSculpt\Release\SkeletonSculpt.pdb" /SUBSYSTEM:WINDOWS /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\chan3\Documents\Visual Studio 2010\Projects\SkeletonSculpt\Release\SkeletonSculpt.lib" /MACHINE:X86 Release\SkeletonBasics.res
+         Release\display.obj
+         Release\drawbackground.obj
+         Release\drawhand.obj
+         Release\drawmodel.obj
+         Release\gesture.obj
+         Release\hand_history.obj
+         Release\log.obj
+         Release\main.obj
+         Release\mesh.obj
+         Release\mode.obj
+         Release\paint.obj
+         Release\Pair.obj
+         Release\picking.obj
+         Release\SkeletonBasics.obj
+         Release\smoothing.obj
+         Release\ui.obj
+         Release\ui_button.obj
+         Release\undo.obj
+         Release\vertex.obj
+         Release\vmmodel.obj
+         Release\window.obj
+         Release\XnPoint3D.obj
+         Generating code
+         Finished generating code
+         SkeletonBasics-D2D.vcxproj -> C:\Users\chan3\Documents\Visual Studio 2010\Projects\SkeletonSculpt\Release\SkeletonSculpt.exe
+       Manifest:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /outputresource:"C:\Users\chan3\Documents\Visual Studio 2010\Projects\SkeletonSculpt\Release\SkeletonSculpt.exe;#1" /manifest Release\SkeletonSculpt.exe.intermediate.manifest
+       FinalizeBuildStatus:
+         Deleting file "Release\SkeletonSculpt.unsuccessfulbuild".
+         Touching "Release\SkeletonSculpt.lastbuildstate".
+     1>Done Building Project "C:\Users\chan3\Documents\Visual Studio 2010\Projects\SkeletonSculpt\SkeletonBasics-D2D.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:03.23

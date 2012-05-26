@@ -30,7 +30,7 @@ void drawRHand(bool grab, float x, float y, float z){
 
 
 		glPointSize(12);
-		if(grab) glColor3f(1.0, 0, 0);
+		if(grab) glColor3f(0.0, 0, 1.0);
 		else glColor3f(0.9,0.9,0.8);
 		float dis = 0.1;
  

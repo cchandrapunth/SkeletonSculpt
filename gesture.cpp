@@ -57,7 +57,7 @@ int* m_depthRGBX;
 static const int cDepthWidth  = 640;
 static const int cDepthHeight = 480;
 
-
+int n = 0; //number of points
 //-----------------------------------------------------
 //					   LOG
 //-----------------------------------------------------
@@ -311,7 +311,12 @@ int NUIinit()
 }
 
 void extract_Skeleton(){
-	NuiSkeletonGetNextFrame( 0, &SkeletonFrame );
+	HRESULT hr =NuiSkeletonGetNextFrame( 0, &SkeletonFrame );
+	if ( FAILED(hr) )
+    {
+        return;
+    }
+
 	NuiTransformSmooth(&SkeletonFrame,NULL);		// smooth out the skeleton data
 
 	bFoundSkeleton = false;
@@ -381,7 +386,7 @@ void draw_hand(XnPoint3D* handPointList)
 	
 	// Go over each existing hand
 	//for (PointIterator = m_History.begin();PointIterator != m_History.end();++PointIterator) {
-	if(bFoundSkeleton){
+
 		// Clear buffer
 		int nPoints = 0;
 		int i = 0;
@@ -418,19 +423,20 @@ void draw_hand(XnPoint3D* handPointList)
 
 			//draw palm 
 			drawRHand(RGRAB, pt.X*4, pt.Y*4, pt.Z);
-		}
-	}
+		}	
 
 	glEnable(GL_LIGHTING);
 	glEnable(GL_TEXTURE_2D);
+
 }
 //hand histogram
 int draw_map(XnPoint3D* handPointList, XnPoint3D palm){
 	
+	//fprintf(pFile2, "%.4f %.4f %.4f\n", palm.X, palm.Y, palm.Z);
 	if(palm.Z == 0) return 0;
 
 	int nX, nY;
-	int n = 0; //number of points
+	
 
 	//depth threshold
 	int minZ = palm.Z- HANDDEPTH;
@@ -438,21 +444,21 @@ int draw_map(XnPoint3D* handPointList, XnPoint3D palm){
 
 	//svm
 	int svm_index = 0;
-	/*
-	//depth data from kinect
-	xn::DepthMetaData depthMD;
-	g_DepthGenerator.GetMetaData(depthMD);
-	nXRes = depthMD.XRes();
-	nYRes = depthMD.YRes();
-	//Pointer to depthmap
-	const XnUInt16* pDepth = depthMD.Data();
-	XnUInt16 nValue;
-	*/
+
+	if(!RGRAB) glColor3f(1, 0, 0);
+	else glColor3f(1, 0.0, 0.0);
+
 	//image
 	HRESULT hr = NuiImageStreamGetNextFrame(m_pDepthStreamHandle, 0, &imageFrame);
 	if (FAILED(hr))
 	{
-		return 0;
+		glPointSize(2);
+		glBegin(GL_POINTS);
+		for(int i=0; i< n; i++){
+			glVertex3f(convertX(handPointList[i].X), convertY(handPointList[i].Y), 3.0);
+		}
+		glEnd();
+		return n;
 	}
 
 	INuiFrameTexture * pTexture = imageFrame->pFrameTexture;
@@ -462,62 +468,15 @@ int draw_map(XnPoint3D* handPointList, XnPoint3D palm){
 
 	//set color
 	glPointSize(2);
-	
-	if(!RGRAB) glColor3f(0, 1, 0);
-	else glColor3f(1, 0.0, 0.0);
-	
+
+
+
 	XnPoint3D *p = new XnPoint3D;
-
-	/*
-	glBegin(GL_POINTS);
-	//draw histogram from depthmap
-	//Iterate through the pixel from top to bottom/ right to left
-	for (nY= 0; nY<nYRes; nY++)
-	{
-		for (nX=0; nX<nXRes; nX++)
-		{
-			nValue = *pDepth;
-
-			//in the bounding box only
-			if((nX < palm.X+HANDRADIUS && nX > palm.X-HANDRADIUS) && 
-				(nY < palm.Y+HANDRADIUS && nY > palm.Y-HANDRADIUS)){
-
-					svm_index++;
-
-					//the point falls inside the threshold
-					if(nValue > minZ && nValue <maxZ){
-
-						//the depth map is mirroring. As glOrtho is scaled to 0,nXRes and 0,nYRes
-						//flip the coordinate using nXRes and nYRes
-						//convert in relative to viewport 
-						if(SHOWHAND)
-							glVertex3f(convertX(nX), convertY(nY), 3.0f);
-
-						(*p).X = nX;
-						(*p).Y = nY;
-						(*p).Z = nValue;
-						//store the point that could be in hand region
-						handPointList[n] = *p;
-						n++;	
-
-						//training data for svm
-						if(printTraining){
-							//add to svm_grid
-							int px = nX - (int)palm.X + HANDRADIUS;
-							int py = nY - (int)palm.Y + HANDRADIUS;
-
-							svm_grid[px][py] = 1;
-						}
-					}
-			}
-			pDepth++;
-		}
-	}		
-	delete(p);
-	glEnd();
-	*/
-
+	boolean draw  = false; 
 	// Make sure we've received valid data
+
+
+
 	if (LockedRect.Pitch != 0)
 	{
 
@@ -530,68 +489,65 @@ int draw_map(XnPoint3D* handPointList, XnPoint3D palm){
 		float handPixelX = convertPalmPixelX(palm.X);
 		float handPixelY = convertPalmPixelY(palm.Y);
 		
+
+		
 		glPointSize(2);
 		glColor3f(1, 0, 0);
 		glBegin(GL_POINTS);
+		n = 0;
 		//while ( pBufferRun < pBufferEnd )
-		for (int nY= 0; nY<cDepthHeight; nY++)
-		{
+		for (int nY= 0; nY<cDepthHeight; nY++){
 			for (int nX=0; nX<cDepthWidth; nX++){
 
-				if((nY < handPixelY+HANDRADIUS && nY > handPixelY-HANDRADIUS) && 
+				//////////////////////////////////////////////////////////////////////////////////
+				//hand bounding 
+				if((nY < handPixelY+HANDRADIUS+10 && nY > handPixelY-HANDRADIUS-10) && 
 					(nX < handPixelX+HANDRADIUS && nX > handPixelX-HANDRADIUS)){
 
 						// discard the portion of the depth that contains only the player index
 						USHORT depth = NuiDepthPixelToDepth(*pBufferRun);
-
 						//get player index 
 						USHORT player = NuiDepthPixelToPlayerIndex(*pBufferRun);
 
 						*(rgbrun++) = depth;
 
-
+						//fnd depth
 						int depthint = (int) depth;
 						int min = (palm.Z*1000) -50;
 						int max = (palm.Z*1000) +70;
 
-
+						////////////////////////////////////////////////////////////////
+						//check depth 
 						if(depth > min && depth <  max){
 
 							//fprintf(pFile2, "palm: %f |\t pixel= [%d, %d, %d]\n", palm.Z*1000,  nX, nY, depthint);
 							//fprintf(pFile2, "*");
 
-							//if(bFoundSkeleton){
-								if(SHOWHAND)
-									glVertex3f(convertX(nX), convertY(nY), 3.0f);
-									//glVertex3f((((float)nX/cDepthWidth)*4)-2, -((((float)nY/cDepthHeight)*4)-2), 3.0);
+							if(SHOWHAND){
+								glVertex3f(convertX(nX), convertY(nY), 3.0f);
+								//glVertex3f((((float)nX/cDepthWidth)*4)-2, -((((float)nY/cDepthHeight)*4)-2), 3.0);
+								//fprintf(pFile2, "[%f, %f] ", convertX(nX), convertY(nY));
+							}
+							(*p).X = nX;
+							(*p).Y = nY;
+							(*p).Z = depth;
+							//store the point that could be in hand region
 
-								(*p).X = nX;
-								(*p).Y = nY;
-								(*p).Z = depth;
-								//store the point that could be in hand region
-			
-								handPointList[n] = *p;
-								n++;
-							//}
-						}
-						//else fprintf(pFile2, "-");
-
-
-
-						//if(player > 0) fprintf(pFile2, "*");
-						//else fprintf(pFile2, "%u ", depth);
-
-						// We're outputting BGR, the last byte in the 32 bits is unused so skip it
-						// If we were outputting BGRA, we would write alpha here.
-						//++rgbrun;
+							handPointList[n].X = nX;
+							handPointList[n].Y = nY;
+							handPointList[n].Z = depth;
+							n++;
+							
+						}//else fprintf(pFile2, "-");
 				}
+				
 
 				// Increment our index into the Kinect's depth buffer
 				++pBufferRun;
-				
-			}
-			fprintf(pFile2,"\n");
+			}//fprintf(pFile2,"\n");
+
 		}
+		
 	}
 	glEnd();
 	// We're done with the texture so unlock it
@@ -600,6 +556,8 @@ int draw_map(XnPoint3D* handPointList, XnPoint3D palm){
 
 	// Release the frame
 	NuiImageStreamReleaseFrame(m_pDepthStreamHandle, imageFrame);
+
+
 	return n;
 }
 
@@ -610,14 +568,15 @@ void predict_gesture(XnPoint3D* handPointList, XnPoint3D palm, int n){
 
 	//Edge predict
 	result = getEdge(handPointList, n, palm);
-
+	/*
 	if(result)fprintf(pFile, "-1\t");
 	else fprintf(pFile, "1\t");
-	
+	*/
+
 	//smoothing algorithm
 	smoothHand(result);
 	bool smooth_result = isGrabsmooth();
-
+	/*
 	//print
 	if(smooth_result) {
 		fprintf(pFile, "-1");
@@ -628,11 +587,12 @@ void predict_gesture(XnPoint3D* handPointList, XnPoint3D palm, int n){
 		RGRAB = false;
 	}
 	fprintf(pFile,"\n");
+	*/
 
 }
 
 /**********************************************************
-					Machine Learning
+Machine Learning
 **********************************************************/
 bool find_finger(XnPoint3D* List, int nNumberOfPoints, XnPoint3D palm){
 	/*
@@ -646,11 +606,11 @@ bool find_finger(XnPoint3D* List, int nNumberOfPoints, XnPoint3D palm){
 	(*lowest).X = 0; (*lowest).Y = 0;
 	XnPoint3D* ptr = List; 
 	while(count < nNumberOfPoints){	
-		unsigned int xx = ptr->X;
-		unsigned int yy = ptr->Y;
+	unsigned int xx = ptr->X;
+	unsigned int yy = ptr->Y;
 
-		if(xx > (*lowest).X){
-			lowest->X = ptr->X;
+	if(xx > (*lowest).X){
+	lowest->X = ptr->X;
 			lowest->Y = ptr->Y;
 		}
 		count++;
@@ -803,15 +763,15 @@ bool getEdge(XnPoint3D* List, int nNumberOfPoints, XnPoint3D palm){
 		count++;
 		ptr++;
 	}
-	
-	/*
-	glColor3f(0, 0, 0);
+
+	glPointSize(8);
+	glColor3f(0, 0, 1.0);
 	glBegin(GL_POINTS);
 	glVertex3f(convertX(highest->X), convertY(highest->Y), 4.1f);
 	glVertex3f(convertX(lowest->X), convertY(lowest->Y), 4.1f);
 	glVertex3f(convertX((highest->X+lowest->X)/2), convertY((highest->Y+lowest->Y)/2), 4.1f);
 	glEnd();
-	*/
+	
 
 	//hand length
 	return estimateGrab(List, nNumberOfPoints, highest, lowest, leftmost, rightmost, palm);
