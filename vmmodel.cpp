@@ -33,6 +33,7 @@ bool debug = true;
 bool LOAD_FROM_ORIGIN = true;
 Log *pLog; 
 FILE *mFile;
+FILE *pFile3;
 
 int getFaceListSize(){	return faceList.size();};
 int getVertexListSize(){	return vertexList.size();};
@@ -46,6 +47,7 @@ void import_vm(){
 
 	//pLog = new Log("vmmodel.log");
 	mFile = fopen("vmmodel.txt", "w");	
+	pFile3 = fopen("softselection.txt", "w");
 
 	ifstream indata;
 	if(LOAD_FROM_ORIGIN)
@@ -746,22 +748,22 @@ float* convertCoordinate(float transx, float transy, float transz){
 	//transy = 0;
 	//transz = 0;
 
-	float vectorx = transx;
-	float vectory = transy;
+	float vectorx = -transx;
+	float vectory = -transy;
 	float vectorz = -transz;
 
 	
 	//rotate around y axis
-	vectorx =  transx*cos(radianx) - vectorz*sin(radianx);	//x' = xcos0- zsin0
-	vectorz =  -transx*sin(radianx) + vectorz*cos(radianx);	//z' = xsin0+ zcos0
+	vectorx =  vectorx*cos(radianx) - vectorz*sin(radianx);	//x' = xcos0- zsin0
+	vectorz =  transx*sin(radianx) + vectorz*cos(radianx);	//z' = xsin0+ zcos0
 	
-	
+	/*
 	//Note:: mistake 
 	//make sure the z value changes and it's updated in the second rotation
 	//rotate around x axis
 	vectory = transy*cos(radiany) - vectorz*sin(radiany);	// y' = ycos0 - zsin0
 	vectorz = transy*sin(radiany) + vectorz*cos(radiany);	// z' = ysin0 + zcos0
-	
+	*/
 
 	float v[3] = {vectorx, vectory, vectorz};
 	return v;
@@ -819,9 +821,9 @@ void interpolate(int id, float transx, float transy, float transz, int rotx, int
 		vectorx = 0;
 		vectory = 0;
 	}
-	//printf("x= %f, y=%f, z=%f\n", vectorx/10, vectory/10, vectorz/10);
+	fprintf(pFile3, "x= %f, y=%f, z=%f\n", vectorx, vectory, vectorz);
 
-	softselection(id, vectorx/100, vectory/100, vectorz/100);
+	softselection(id, vectorx/200, vectory/200, vectorz/100);
 
 	//check size to subdivide
 	int do_divide = 0;

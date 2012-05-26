@@ -196,7 +196,7 @@ void checkRCursor(int func, hand_h* rhand){
 
 //LEFT HAND:: handle rotation
 void checkLCursor(hand_h* lhand){
-	/*
+	
 	if((isLGrab() && !switchHand) || (switchHand && isGrab())) {
 		XnPoint3D point;
 		if(switchHand)  point = getPalm();
@@ -221,7 +221,7 @@ void checkLCursor(hand_h* lhand){
 			lhand->clearHandList();
 		}
 	}
-	*/
+	
 }
 
 void preview_scene(){
@@ -245,8 +245,8 @@ bool get_buffer(){
 float* getCursor(){
 	
 	float* c = (float*) malloc(sizeof(float)*2);
-	c[0] = getPalm().X*w;
-	c[1] = getPalm().Y*h;
+	c[0] = getPalm().X;
+	c[1] = getPalm().Y;
 	return c;
 	
 	return 0;

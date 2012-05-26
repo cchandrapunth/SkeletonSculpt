@@ -136,8 +136,8 @@ void trackRoll(){
 	zoom = getMatZ()+zoomvZ;
 
 	//debug
-	//rotX = 90;
-	rotY = 0;
+	//rotX = 270;
+	//rotY = 0;
 
 	vertex c = getCenter();
 	glTranslated(c.x, c.y, c.z);

@@ -355,8 +355,8 @@ void extract_Skeleton(){
 			XnPoint3D* ptResolution = new XnPoint3D();
 			//ptResolution->X = (ptProjective->X+1)* cDepthWidth/2;
 			//ptResolution->Y = (ptProjective->Y+1)* cDepthHeight/2;
-			ptResolution->X = (ptProjective->X+0.5);
-			ptResolution->Y = (ptProjective->Y+0.5);
+			ptResolution->X = (ptProjective->X+0.5)*800;
+			ptResolution->Y = (ptProjective->Y+0.5)*800;
 			ptResolution->Z = ptProjective->Z*1000; 
 			RpalmPos = *ptResolution;
 
@@ -624,7 +624,7 @@ void analyse_histogram(){
 
 	fprintf(pFile2, "peek: %d\n", peek);
 	
-	if(peek  < 40){
+	if(peek  < 45){
 		smoothHand(true);
 		RGRAB = isGrabsmooth();
 	}else {

@@ -272,6 +272,7 @@ void initRender(){
 ***********************************************************/
 void reshape(int w, int h){
 
+
 	glViewport(0, 0, w, h); 
 
 	glMatrixMode(GL_PROJECTION);
