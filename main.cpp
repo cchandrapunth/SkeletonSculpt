@@ -396,7 +396,7 @@ void reload(){
 }
 
 void UIhandler(){
-	Master_ui->check_click(getCursor()[0], getCursor()[1]);
+	Master_ui->check_click(((getPalm().X/800)*4)-2, (getPalm().Y/800)*4-2);
 }
 
 void push_menu(){

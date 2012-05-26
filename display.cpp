@@ -141,10 +141,16 @@ void checkRCursor(int func, hand_h* rhand){
 		else{
 			//sculpt
 			if(func == 1) {
+				
 				//select a mesh once
 				//we don't need this for painting
 				set_state(2);
 				
+				if(switchHand){
+					commitScene(rhand->gettranslateX(), rhand->gettranslateY(), rhand->gettranslateZ());
+					recalNormal();
+				}
+				else{
 					//grab group of mesh
 					if(sListContain(getSelection()) >= 0 ){
 						interpolate(getsList(), rhand->gettranslateX(), 
@@ -157,7 +163,7 @@ void checkRCursor(int func, hand_h* rhand){
 							rhand->gettranslateY(), rhand->gettranslateZ(), getRotX(), getRotY());
 						recalNormal();
 					}
-
+				}
 			}
 			//paint
 			else if(func ==2){

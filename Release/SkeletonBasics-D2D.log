@@ -1,24 +1,10 @@
-﻿Build started 5/26/2012 3:27:19 PM.
+﻿Build started 5/26/2012 3:45:43 PM.
      1>Project "C:\Users\chan3\Documents\Visual Studio 2010\Projects\SkeletonSculpt\SkeletonBasics-D2D.vcxproj" on node 2 (build target(s)).
      1>InitializeBuildStatus:
          Creating "Release\SkeletonSculpt.unsuccessfulbuild" because "AlwaysCreate" was specified.
        ClCompile:
-         c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _WINDOWS /D _UNICODE /D UNICODE /Gm- /EHsc /MT /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt drawmodel.cpp vmmodel.cpp
+         c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _WINDOWS /D _UNICODE /D UNICODE /Gm- /EHsc /MT /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt drawmodel.cpp
          drawmodel.cpp
-         vmmodel.cpp
-     1>vmmodel.cpp(49): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-                 c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include\stdio.h(234) : see declaration of 'fopen'
-     1>vmmodel.cpp(50): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-                 c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include\stdio.h(234) : see declaration of 'fopen'
-     1>vmmodel.cpp(125): warning C4018: '<' : signed/unsigned mismatch
-     1>vmmodel.cpp(133): warning C4018: '<' : signed/unsigned mismatch
-     1>vmmodel.cpp(169): warning C4018: '<' : signed/unsigned mismatch
-     1>vmmodel.cpp(212): warning C4018: '<' : signed/unsigned mismatch
-     1>vmmodel.cpp(365): warning C4018: '<' : signed/unsigned mismatch
-     1>vmmodel.cpp(368): warning C4018: '<' : signed/unsigned mismatch
-     1>vmmodel.cpp(769): warning C4172: returning address of local variable or temporary
-     1>vmmodel.cpp(799): warning C4172: returning address of local variable or temporary
-     1>vmmodel.cpp(979): warning C4018: '<' : signed/unsigned mismatch
        ResourceCompile:
          All outputs are up-to-date.
        Link:
@@ -57,4 +43,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:04.11
+Time Elapsed 00:00:03.16
