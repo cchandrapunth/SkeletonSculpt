@@ -44,7 +44,7 @@ float convertY(float y);
 float convertPalmPixelX(float px);
 float convertPalmPixelY(float py);
 
-void set_print_training(int i);
+void set_print_training(bool g);
 void setAspect(float asp);
 float getAspect();
 

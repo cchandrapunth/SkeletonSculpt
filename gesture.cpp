@@ -18,7 +18,7 @@
 
 #define GESTURE_TO_USE "Click" 
 #define HANDDEPTH 60 //in mm
-#define HANDRADIUS 80
+#define HANDRADIUS 90
 #define GRAB_THRESHOLD 0.45
 #define m_nHistorySize 25
 
@@ -41,7 +41,10 @@ int svm_grid[2*HANDRADIUS][2*HANDRADIUS]; // size 2HANDRADIUS*2HANDRADIUS
 int numpoint[nb][nb];
 int len[100];	//length
 
-static std::list<XnPoint3D> m_History;	//point history (one hand only)
+static std::list<XnPoint3D> m_History;	//hand history 
+static XnPoint3D w_History;  //wrist history
+
+
 static std::list<int> handId;
 int prime_id = 0;
 float aspect = 1; 
@@ -80,8 +83,9 @@ float getAspect(){
 	return aspect;
 }
 
-void set_print_training(int i){
-	printTraining = i;
+void set_print_training(bool g){
+	if(g)	fprintf(pFile, "GRAB\n");
+	else	fprintf(pFile, "release\n");
 }
 
 bool hasTwoHands(){
@@ -333,6 +337,13 @@ void extract_Skeleton(){
 			ptProjective->Y =SkeletonFrame.SkeletonData[i].SkeletonPositions[NUI_SKELETON_POSITION_HAND_RIGHT].y;
 			ptProjective->Z =SkeletonFrame.SkeletonData[i].SkeletonPositions[NUI_SKELETON_POSITION_HAND_RIGHT].z;
 
+			//right wrist
+			XnPoint3D* ptProjective2 = new XnPoint3D();
+			ptProjective2->X =SkeletonFrame.SkeletonData[i].SkeletonPositions[NUI_SKELETON_POSITION_WRIST_RIGHT].x;
+			ptProjective2->Y =SkeletonFrame.SkeletonData[i].SkeletonPositions[NUI_SKELETON_POSITION_WRIST_RIGHT].y;
+			ptProjective2->Z =SkeletonFrame.SkeletonData[i].SkeletonPositions[NUI_SKELETON_POSITION_WRIST_RIGHT].z;
+
+			
 			//store palm pos to use as a cursor in display
 			//convert to estimated pixel 
 			//depthmap return [-0.5, 0.5]
@@ -351,7 +362,8 @@ void extract_Skeleton(){
 				// Keep size of history buffer
 				if (m_History.size() > m_nHistorySize)
 					m_History.pop_back();
-
+					
+				w_History = *ptProjective2;
 				
 				fprintf(pFile1, "HandRight X=%4.2f  Y=%4.2f  Z=%4.2f  | convert %.1f %.1f \n",ptProjective->X,ptProjective->Y,ptResolution->Z, 
 																	ptResolution->X, ptResolution->Y);    
@@ -445,6 +457,8 @@ int draw_map(XnPoint3D* handPointList, XnPoint3D palm){
 	//svm
 	int svm_index = 0;
 
+	//////////////////////////////////////////////
+	//change here to show effect grab
 	if(!RGRAB) glColor3f(1, 0, 0);
 	else glColor3f(1, 0.0, 0.0);
 
@@ -452,12 +466,15 @@ int draw_map(XnPoint3D* handPointList, XnPoint3D palm){
 	HRESULT hr = NuiImageStreamGetNextFrame(m_pDepthStreamHandle, 0, &imageFrame);
 	if (FAILED(hr))
 	{
-		glPointSize(2);
-		glBegin(GL_POINTS);
-		for(int i=0; i< n; i++){
-			glVertex3f(convertX(handPointList[i].X), convertY(handPointList[i].Y), 3.0);
+		if(SHOWHAND){
+			glPointSize(2);
+			glBegin(GL_POINTS);
+			for(int i=0; i< n; i++){
+				glVertex3f(convertX(handPointList[i].X), convertY(handPointList[i].Y), 3.0);
+			}
+			glEnd();
 		}
-		glEnd();
+
 		return n;
 	}
 
@@ -488,20 +505,20 @@ int draw_map(XnPoint3D* handPointList, XnPoint3D palm){
 
 		float handPixelX = convertPalmPixelX(palm.X);
 		float handPixelY = convertPalmPixelY(palm.Y);
-		
+		float wristPixelY = convertPalmPixelY(w_History.Y);
+		//restart the counting
+		n = 0;
 
-		
 		glPointSize(2);
 		glColor3f(1, 0, 0);
 		glBegin(GL_POINTS);
-		n = 0;
-		//while ( pBufferRun < pBufferEnd )
+		
 		for (int nY= 0; nY<cDepthHeight; nY++){
 			for (int nX=0; nX<cDepthWidth; nX++){
 
 				//////////////////////////////////////////////////////////////////////////////////
 				//hand bounding 
-				if((nY < handPixelY+HANDRADIUS+10 && nY > handPixelY-HANDRADIUS-10) && 
+				if((nY < wristPixelY && nY > handPixelY-HANDRADIUS) && 
 					(nX < handPixelX+HANDRADIUS && nX > handPixelX-HANDRADIUS)){
 
 						// discard the portion of the depth that contains only the player index
@@ -513,7 +530,7 @@ int draw_map(XnPoint3D* handPointList, XnPoint3D palm){
 
 						//fnd depth
 						int depthint = (int) depth;
-						int min = (palm.Z*1000) -50;
+						int min = (palm.Z*1000) -70;
 						int max = (palm.Z*1000) +70;
 
 						////////////////////////////////////////////////////////////////
@@ -524,6 +541,7 @@ int draw_map(XnPoint3D* handPointList, XnPoint3D palm){
 							//fprintf(pFile2, "*");
 
 							if(SHOWHAND){
+								//if(convertY(nX) < palm.X*4) glColor3f(1, 0 , 1);
 								glVertex3f(convertX(nX), convertY(nY), 3.0f);
 								//glVertex3f((((float)nX/cDepthWidth)*4)-2, -((((float)nY/cDepthHeight)*4)-2), 3.0);
 								//fprintf(pFile2, "[%f, %f] ", convertX(nX), convertY(nY));
@@ -546,8 +564,9 @@ int draw_map(XnPoint3D* handPointList, XnPoint3D palm){
 				++pBufferRun;
 			}//fprintf(pFile2,"\n");
 
-		}
-		
+			}
+			
+
 	}
 	glEnd();
 	// We're done with the texture so unlock it
@@ -805,16 +824,23 @@ bool estimateGrab(XnPoint3D* list, int n,
 	//		 |						|
 	//		 xr,y-------x,y-------xl, y
 	
-	
+	glColor3f(1,0,1);
+	glBegin(GL_POINTS);
 	while (count < n){
 		int xx = ptr->X;
 		int yy = ptr->Y;
 		//fprintf(pFile,"%d,%d ", xx, yy);
 		
-		if(xx < xr && xx> xl && yy < y && yy > yh) nom++;
+		if(xx < xr && xx> xl && yy < y && yy > yh) {
+			if(SHOWHAND){
+			glVertex3f(convertX(xx), convertY(yy), 4.5f);
+			}
+			nom++;
+		}
 		count++;
 		ptr++;
 	}
+	glEnd();
 	denom = (xr-xl)*(y-yh);
 	float percent =  ((float)nom)/denom;
 	if(denom != 0 && printDebug) {

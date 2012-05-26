@@ -313,10 +313,14 @@ void processNormalKeys(unsigned char key, int x, int y){
 	}
 	else if(key == 111) {//'o' to train value = open hand
 		//////////////set_print_training(2);
+		// grab
+		set_print_training(true);
 	}
 
 	else if(key == 112) {// 'p' to train value = close hand
 		///////////////set_print_training(1);
+		// no grab
+		set_print_training(false);
 	}
 	else if(key == 49){ //'1' for rotate X
 			commitScene(-2, 0, 0);
