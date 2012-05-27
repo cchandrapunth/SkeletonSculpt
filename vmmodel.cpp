@@ -823,7 +823,7 @@ void interpolate(int id, float transx, float transy, float transz, int rotx, int
 	}
 	fprintf(pFile3, "x= %f, y=%f, z=%f\n", vectorx, vectory, vectorz);
 
-	softselection(id, vectorx/200, vectory/200, vectorz/100);
+	softselection(id, vectorx/100, vectory/100, vectorz/100);
 
 	//check size to subdivide
 	int do_divide = 0;

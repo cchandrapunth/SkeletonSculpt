@@ -163,8 +163,8 @@ void trackRoll(){
 
 void commitScene(float transx, float transy, float z){
 	//set variable for rotate/zoom
-	rollvX = -transx/2;
-	rollvY = transy/2;
+	rollvX = transx;
+	rollvY = transy;
 	zoomvZ = z/2;
 }
 

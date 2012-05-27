@@ -48,6 +48,7 @@ static XnPoint3D w_History;  //wrist history
 int *histogram;
 
 static std::list<int> handId;
+static std::list<float> var_history;
 int prime_id = 0;
 float aspect = 1; 
 
@@ -62,6 +63,7 @@ int* m_depthRGBX;
 static const int cDepthWidth  = 640;
 static const int cDepthHeight = 480;
 
+int sump = 0;
 int n = 0; //number of points
 //-----------------------------------------------------
 //					   LOG
@@ -306,7 +308,7 @@ int NUIinit()
 			&m_pDepthStreamHandle);
 
 		m_depthRGBX = new int[cDepthWidth*cDepthHeight];
-		histogram = new int[100];
+		histogram = new int[150];
 	}
 
 	//debuging
@@ -402,7 +404,7 @@ void draw_hand(XnPoint3D* handPointList)
 	
 	// Go over each existing hand
 	//for (PointIterator = m_History.begin();PointIterator != m_History.end();++PointIterator) {
-
+	if(m_History.size() > 0){
 		// Clear buffer
 		int nPoints = 0;
 		int i = 0;
@@ -441,7 +443,7 @@ void draw_hand(XnPoint3D* handPointList)
 			//draw palm 
 			drawRHand(RGRAB, pt.X*4, pt.Y*4, pt.Z);
 		}	
-
+	}
 	glEnable(GL_LIGHTING);
 	glEnable(GL_TEXTURE_2D);
 
@@ -466,6 +468,8 @@ int draw_map(XnPoint3D* handPointList, XnPoint3D palm){
 	//change here to show effect grab
 	if(!RGRAB) glColor3f(1, 0, 0);
 	else glColor3f(0, 1.0, 0.0);
+
+
 
 	//image
 	HRESULT hr = NuiImageStreamGetNextFrame(m_pDepthStreamHandle, 0, &imageFrame);
@@ -497,11 +501,11 @@ int draw_map(XnPoint3D* handPointList, XnPoint3D palm){
 	// Make sure we've received valid data
 
 	//refresh histogram 
-	for(int i=0; i< 100; i++){
+	for(int i=0; i< 150; i++){
 		histogram[i] = 0;
 	}
 
-	int min = (palm.Z*1000) -60;
+	int min = (palm.Z*1000) -110;
 	int max = (palm.Z*1000) +40;
 	if (LockedRect.Pitch != 0)
 	{
@@ -615,16 +619,75 @@ int draw_map(XnPoint3D* handPointList, XnPoint3D palm){
 }
 
 void analyse_histogram(){
-	int peek = 0; 
+	int peek = 0;
+	float mean = 0; 
+	sump = 0;
+
 	//what's the peek? 
-	for(int i=0; i< 99; i+=2){
+	for(int i=0; i< 148; i+=2){
 		int count = (histogram[i]+ histogram[i+1])/10;
 		if(count > peek) peek = count;
+		sump += pow(count, 2.0); 
+
+		fprintf(pFile2, "%d\t", i);
+		for(int j=0; j< count; j++){
+			fprintf(pFile2, "|");
+		}
+		fprintf(pFile2, " %d\n", count);
+
+	}
+	fprintf(pFile2, "peek: %d\n", peek);
+	/*
+	if(peek  < 44){
+		smoothHand(true);
+		RGRAB = isGrabsmooth();
+	}else {
+		smoothHand(false);
+		RGRAB = isGrabsmooth();
+	}*/
+
+	//find standard deviation
+
+	float m =0; 
+	for(int i=0; i< 150; i++){
+		if(histogram[i] > 0) {
+			mean += (i*histogram[i]); 
+			m+= histogram[i];
+		}
+	}
+	mean = mean/m; 
+	
+	//find variance 
+	float var = 0; 
+	for(int i=0; i< 150; i++){
+		if(histogram[i] > 0){
+			var += histogram[i]* pow((mean-i), (float)2.0);
+		}
+	}
+	var = var/m; 
+		
+	var_history.push_back(var); 
+	if(var_history.size() > 10) {
+		var_history.pop_front(); 
 	}
 
-	fprintf(pFile2, "peek: %d\n", peek);
-	
-	if(peek  < 45){
+	fprintf(pFile2, "mean %f \t var: %f\n", mean, var);
+
+	float avg = 0; 
+	std::list<float>::const_iterator Iter;
+	for(Iter = var_history.begin(); Iter != var_history.end(); Iter++){
+		avg += *Iter;
+	}
+	avg/var_history.size(); 
+	/*
+	glRasterPos3f(0, 0, 3.5);
+	char buff[256];
+	sprintf(buff, "%.0f", avg);
+	for(int i=0; i< strlen(buff); i++){
+		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, buff[i]);
+	}*/	
+
+	if(var  > 350){
 		smoothHand(true);
 		RGRAB = isGrabsmooth();
 	}else {
