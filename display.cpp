@@ -120,8 +120,6 @@ void mode_selection(XnPoint3D* handPointList, hand_h* rhand){
 		
 	}
 
-	printscr();
-
 }
 
 

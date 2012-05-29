@@ -98,8 +98,8 @@ void ui_button::draw_pressed(){
   glEnd();
 
   glBegin( GL_LINE_LOOP );
-  glVertex2f( x+0.01, y+0.01 );         glVertex2f( x+w-0.01, y+0.01 );
-  glVertex2f( x+w-0.01, y+h-0.01 );     glVertex2f( x+0.01, y+h-0.01 );
+  glVertex3f( x+0.01, y+0.01 , ui_depth+0.1);         glVertex3f( x+w-0.01, y+0.01 , ui_depth+0.1);
+  glVertex3f( x+w-0.01, y+h-0.01 , ui_depth+0.1);     glVertex3f( x+0.01, y+h-0.01, ui_depth+0.1 );
   glEnd();
 }
 
@@ -116,18 +116,18 @@ void ui_button::draw_text(int sunken){
 	glColor3f(1.0,1.0,1.0);
   }
   else{ //dont' wrtie name for color button
-	  if (strcmp ("red", butt_name) == 0)
-		  glColor3f(1.0, 0.1, 0.1);
+	  if (strcmp ("orange", butt_name) == 0)
+		  glColor3f(255.0/255, 69.0/255, 0.0/255);
 	  else if(strcmp ("green", butt_name) == 0)
-		  glColor3f(0.1, 1, 0.1);
+		  glColor3f(107.0/255, 142.0/255, 35.0/255);
 	  else if(strcmp ("blue", butt_name) == 0)
-		  glColor3f(0.1, 0.1, 1);
+		  glColor3f(30.0/255, 144.0/255, 1.0);
 	  else if(strcmp ("yellow", butt_name) == 0)
-		  glColor3f(1, 1, 0.2);
-	  else if(strcmp ("white", butt_name) == 0)
-		  glColor3f(1, 1, 1);
+		  glColor3f(1, 215.0/255, 0);
+	  else if(strcmp ("purple", butt_name) == 0)
+		  glColor3f(186.0/255, 85.0/255, 211.0/255);
 	  else if(strcmp ( "black", butt_name) ==0)
-		  glColor3f(0.1, 0.1, 0.1);
+		  glColor3f(0, 0, 0);
 
 	  else{
 		  //write name for general button
@@ -152,6 +152,8 @@ void ui_button::draw_bar(float a){
   glVertex3f( x+0.02, y+0.02, ui_depth+0.1);         glVertex3f( x+perc, y+0.02, ui_depth+0.1);
   glVertex3f( x+perc, y+h-0.02, ui_depth+0.1);     glVertex3f( x+0.02, y+h-0.02, ui_depth+0.1);
   glEnd();
+
+
 }
 
 void ui_button::output(float x, float y, char *string)

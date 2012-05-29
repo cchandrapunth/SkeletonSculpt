@@ -15,7 +15,7 @@
 #include <map>
 #include <list>
 #include "printsrn.h"
-
+#include "print_screen.h"
 //for kinect sdk APIs
 #include "NuiApi.h"
 
@@ -473,6 +473,10 @@ void draw_hand(XnPoint3D* handPointList)
 			//draw palm 
 			drawRHand(RGRAB, pt.X*4, pt.Y*4, pt.Z);
 		}	
+	}
+	else{
+		char undo[] = "waiting for kinect..";
+		set_text(undo);
 	}
 	glEnable(GL_LIGHTING);
 	glEnable(GL_TEXTURE_2D);

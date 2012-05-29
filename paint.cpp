@@ -19,19 +19,19 @@ void setGLbrushColor(int cid){
 		glColor3f(0,0,0);
 		break;
 	case 2://red
-		glColor3f(1.0, 0, 0);
+		glColor3f(255.0/255, 69.0/255, 0.0/255);
 		break;
 	case 3://green
-		glColor3f(1.0, 105.0/255, 180.0/255);
+		glColor3f(107.0/255, 142.0/255, 35.0/255);
 		break;
 	case 4://blue
-		glColor3f(0, 0, 1.0);
+		glColor3f(30.0/255, 144.0/255, 1.0);
 		break;
 	case 5://yellow
-		glColor3f(1.0, 1.0, 0);
+		glColor3f(1.0, 215.0/255, 0);
 		break;
 	case 6://white
-		glColor3f(1, 1, 1);
+		glColor3f(186.0/255, 85.0/255, 211.0/255);
 		break;
 	case 7://grey
 		glColor3f(0.3, 0.3, 0.3);

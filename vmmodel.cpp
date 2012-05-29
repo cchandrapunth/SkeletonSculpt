@@ -50,6 +50,7 @@ void import_vm(){
 	mFile = fopen("vmmodel.txt", "w");	
 	pFile3 = fopen("softselection.txt", "w");
 
+	/*
 	ifstream indata;
 	if(LOAD_FROM_ORIGIN)
 		indata.open("modelinput.txt");
@@ -59,14 +60,15 @@ void import_vm(){
 		//pLog->Write("Error: input file couldn't be opened");
 		exit(1);
 	}
+	*/
 
 	vertexList.clear();
 	faceList.clear();
-
+	/*
 	int nvertex, nmesh;
 	indata >> nvertex;
 	indata >> nmesh;
-
+	
 	//read in vertex data
 	for(int i=0; i< nvertex; i++){
 		float x, y, z;
@@ -77,7 +79,26 @@ void import_vm(){
 		vertex *v = new vertex(x, y, z);
 		vertexList.push_back(*v);
 	}
+	*/
 
+	int nvertex = 12;
+	int nmesh = 20; 
+
+
+	vertexList.push_back(new vertex(-.525731112119133606,	 0,	.850650808352039932));
+	vertexList.push_back(new vertex(.525731112119133606,	 0, 	.850650808352039932));
+	vertexList.push_back(new vertex(-.525731112119133606,	 0,	-.850650808352039932));
+	vertexList.push_back(new vertex(.525731112119133606,	 0,	-.850650808352039932));
+	vertexList.push_back(new vertex(0	, .850650808352039932 	,.525731112119133606));
+	vertexList.push_back(new vertex(0,	 .850650808352039932	,-.525731112119133606));
+	vertexList.push_back(new vertex(0,	 -.850650808352039932, 	.525731112119133606));
+	vertexList.push_back(new vertex(0,	 -.850650808352039932,	-.525731112119133606));
+	vertexList.push_back(new vertex(.850650808352039932,	 .525731112119133606,	0));
+	vertexList.push_back(new vertex(-.850650808352039932,	 .525731112119133606,	0));
+	vertexList.push_back(new vertex(.850650808352039932,	 -.525731112119133606 ,	0 ));
+	vertexList.push_back(new vertex(-.850650808352039932,	 -.525731112119133606 ,	0));
+
+	/*
 	//read in mesh data
 	for(int j=0; j< nmesh; j++){
 		int id1, id2, id3, cid;
@@ -102,8 +123,46 @@ void import_vm(){
 		vertexList.at(id1).addFaceId(j);
 		vertexList.at(id2).addFaceId(j);
 		vertexList.at(id3).addFaceId(j);
-	}
+	}*/
+
+	faceList.push_back(new mesh(1,4,0));
+	faceList.push_back(new mesh(4,9,0));
+	faceList.push_back(new mesh(4,5,9));
+	faceList.push_back(new mesh(8,5,4));
+	faceList.push_back(new mesh(1,8,4));
+	faceList.push_back(new mesh(1,10,8));
+	faceList.push_back(new mesh(10,3,8));
+	faceList.push_back(new mesh(8,3,5));
+	faceList.push_back(new mesh(3,2,5));
+	faceList.push_back(new mesh(3,7,2));
+	faceList.push_back(new mesh(3,10,7));
+	faceList.push_back(new mesh(10,6,7));
+	faceList.push_back(new mesh(6,11,7));
+	faceList.push_back(new mesh(6,0,11));
+	faceList.push_back(new mesh(6,1,0));
+	faceList.push_back(new mesh(10,1,6));
+	faceList.push_back(new mesh(11,0,9));
+	faceList.push_back(new mesh(2,11,9));
+	faceList.push_back(new mesh(5,2,9));
+	faceList.push_back(new mesh(11,2,7));
+
+	for(int j=0; j< nmesh; j++){
+		mesh m = faceList.at(j);
+		vertex* v = getFaceNormal(vertexList.at(m.ind1), vertexList.at(m.ind2), vertexList.at(m.ind3));	
+		m.normalX = v->x;
+		m.normalY = v->y;
+		m.normalZ = v->z;
+		delete(v);
+
 	
+		m.setColor(3);
+
+		//fill the lookup table for vertices 
+		vertexList.at(m.ind1).addFaceId(j);
+		vertexList.at(m.ind2).addFaceId(j);
+		vertexList.at(m.ind3).addFaceId(j);
+	}
+
 	if(LOAD_FROM_ORIGIN){
 		//subDivide
 		for(int k=0; k< 5; k++){
@@ -1189,8 +1248,7 @@ void copy_vmmodel(){
 	fprintf(pFile3, "copy model: %d\n", numMod);
 
 	//fprintf(pFile3,"---------------------------------------------------\n");
-	char undo[] = "copy";
-	set_text(undo);
+
 }
 
 //restore ex-data to the data structure

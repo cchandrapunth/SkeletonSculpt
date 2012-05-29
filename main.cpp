@@ -19,6 +19,7 @@
 
 #include <sapi.h>
 #include <sphelper.h>
+#include "print_screen.h"
 
 //float hand_l_x =0, hand_l_y =0, hand_l_z =0;
 //float hand_r_x =0, hand_r_y =0, hand_r_z =0;
@@ -48,162 +49,6 @@ hand_h* lhand;
 void UIhandler();
 
 
-
-void NUIhand(){
-	/*
-	NuiSkeletonGetNextFrame( 0, &SkeletonFrame );
-
-	// smooth out the skeleton data
-	NuiTransformSmooth(&SkeletonFrame,NULL);
-	// we found a skeleton, re-start the timer
-	//NuiSkeletonTrackingEnable;
-
-
-	bFoundSkeleton = false;
-
-	for( int i = 0 ; i < NUI_SKELETON_COUNT ; i++ )
-	{
-
-		if( SkeletonFrame.SkeletonData[i].eTrackingState == NUI_SKELETON_TRACKED )
-		{
-			bFoundSkeleton = true;
-
-
-			//right hand
-			hand_r_x=SkeletonFrame.SkeletonData[i].SkeletonPositions[NUI_SKELETON_POSITION_HAND_RIGHT].x;
-			hand_r_y=SkeletonFrame.SkeletonData[i].SkeletonPositions[NUI_SKELETON_POSITION_HAND_RIGHT].y;
-			hand_r_z=SkeletonFrame.SkeletonData[i].SkeletonPositions[NUI_SKELETON_POSITION_HAND_RIGHT].z;
-
-			//if (hand_l_x!=0 && hand_l_y!=0) 
-			if (hand_r_z!=0 ) 
-			{
-				fprintf(pFile1, "HandRight X=%4.2f  Y=%4.2f  Z=%4.2f  | convert %.1f %.1f \n",hand_r_x,hand_r_y,hand_r_z*1000, (hand_r_x+1)* cDepthWidth/2, (hand_r_y+ 1)* cDepthHeight/2);    
-			}
-
-			//////////////////////////////////////////////////////////////        
-			else
-			{
-				NuiSkeletonGetNextFrame( 0, &SkeletonFrame );
-			}
-
-		}        
-	}
-	*/
-	/*
-	//image
-	HRESULT hr = NuiImageStreamGetNextFrame(m_pDepthStreamHandle, 0, &imageFrame);
-	if (FAILED(hr))
-	{
-		return;
-	}
-
-	INuiFrameTexture * pTexture = imageFrame->pFrameTexture;
-	NUI_LOCKED_RECT LockedRect;
-
-	// Lock the frame data so the Kinect knows not to modify it while we're reading it
-	pTexture->LockRect(0, &LockedRect, NULL, 0);
-	// Make sure we've received valid data
-	if (LockedRect.Pitch != 0)
-	{
-
-		int* rgbrun = m_depthRGBX;
-		const USHORT * pBufferRun = (const USHORT *)LockedRect.pBits;
-
-		// end pixel is start + width*height - 1
-		const USHORT * pBufferEnd = pBufferRun + (cDepthWidth * cDepthHeight);
-
-		float handPixelX = (hand_r_x+0.5)* cDepthWidth;
-		float handPixelY = cDepthHeight- ((hand_r_y+0.5)* cDepthHeight);
-		int HANDRADIUS = 80; 
-		
-		glPointSize(2);
-		glColor3f(1, 0, 0);
-		glBegin(GL_POINTS);
-		//while ( pBufferRun < pBufferEnd )
-		for (int nY= 0; nY<cDepthHeight; nY++)
-		{
-			for (int nX=0; nX<cDepthWidth; nX++){
-
-				if((nY < handPixelY+HANDRADIUS && nY > handPixelY-HANDRADIUS) && 
-					(nX < handPixelX+HANDRADIUS && nX > handPixelX-HANDRADIUS)){
-
-						// discard the portion of the depth that contains only the player index
-						USHORT depth = NuiDepthPixelToDepth(*pBufferRun);
-
-						//get player index 
-						USHORT player = NuiDepthPixelToPlayerIndex(*pBufferRun);
-						/*
-						// to convert to a byte we're looking at only the lower 8 bits
-						// by discarding the most significant rather than least significant data
-						// we're preserving detail, although the intensity will "wrap"
-						BYTE intensity = static_cast<BYTE>(depth % 256);
-
-
-						// Write out blue byte
-						*(rgbrun++) = intensity;
-
-						// Write out green byte
-						*(rgbrun++) = intensity;
-
-						// Write out red byte
-						*(rgbrun++) = intensity;
-						
-
-						*(rgbrun++) = depth;
-
-
-						int depthint = (int) depth;
-						int min = (hand_r_z*1000) -70;
-						int max = (hand_r_z*1000) +50;
-
-
-						if(depth > min && depth <  max){
-
-							fprintf(pFile2, "%f [%d, %d] [%.2f, %.2f] | %d\n", hand_r_z*1000,  nX, nY, handPixelX, handPixelY, depthint);
-
-							if(bFoundSkeleton) glVertex3f((((float)nX/cDepthWidth)*4)-2, -((((float)nY/cDepthHeight)*4)-2), 3.0);
-
-						}
-
-
-
-						//if(player > 0) fprintf(pFile2, "*");
-						//else fprintf(pFile2, "%u ", depth);
-
-						// We're outputting BGR, the last byte in the 32 bits is unused so skip it
-						// If we were outputting BGRA, we would write alpha here.
-						//++rgbrun;
-				}
-				// Increment our index into the Kinect's depth buffer
-				++pBufferRun;
-
-			}
-		}
-
-		// Draw the data 
-		//m_pDrawDepth->Draw(m_depthRGBX, cDepthWidth * cDepthHeight * cBytesPerPixel);
-	}
-	glEnd();
-	// We're done with the texture so unlock it
-	pTexture->UnlockRect(0);
-
-	// Release the frame
-	NuiImageStreamReleaseFrame(m_pDepthStreamHandle, imageFrame);
-
-	if(bFoundSkeleton){
-		glColor3f(1, 1, 1);
-		glPointSize(8);
-		glBegin(GL_POINTS);
-		glVertex3f(hand_r_x*4, hand_r_y*4, 3.0);
-		glEnd();
-	}
-	//glutSwapBuffers();
-	glFlush();
-	*/	
-}
-
-
-
 void display(void) {
 
 	if(handPointList == NULL){
@@ -217,12 +62,11 @@ void display(void) {
 		glLoadIdentity();
 		UIhandler(); //check ui touch
 
-		//display
-		//NUIhand();
 
+		//display
+		//printscr();
 		mode_selection(handPointList, rhand);
 
-		
 	}else{
 		preview_scene();
 	}
@@ -374,12 +218,13 @@ void option2(){
 	float height = top -bottom; 
 	float off = height/80;
 
-	Master_ui->add_button("red", left+ width/15, top-height/12, width/12, height/12-off, setRed);	//red
-	Master_ui->add_button("green", left+ width/15, top-height*2/12, width/12, height/12-off, setGreen);	//green
-	Master_ui->add_button("blue", left+ width/15, top-height*3/12, width/12, height/12-off, setBlue);	//blue
-	Master_ui->add_button("yellow", left+ width/15, top-height*4/12, width/12, height/12-off, setYellow);	//yellow
-	Master_ui->add_button("white", left+ width/15, top-height*5/12, width/12, height/12-off, setWhite);	//white
-	Master_ui->add_button("black", left+ width/15, top-height*6/12, width/12, height/12-off, setBlack);	//black
+	Master_ui->add_button("black", left+ width/15, top-height/12, width/12, height/12-off, setBlack);	
+	Master_ui->add_button("orange", left+ width/15, top-height*2/12, width/12, height/12-off, setRed);	
+	Master_ui->add_button("yellow", left+ width/15, top-height*3/12, width/12, height/12-off, setYellow);	
+	Master_ui->add_button("green", left+ width/15, top-height*4/12, width/12, height/12-off, setGreen);	
+	Master_ui->add_button("blue", left+ width/15, top-height*5/12, width/12, height/12-off, setBlue);	
+	Master_ui->add_button("purple", left+ width/15, top-height*6/12, width/12, height/12-off, setWhite);	
+
 }
 //selection?
 void option3(){
