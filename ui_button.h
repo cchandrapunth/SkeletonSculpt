@@ -17,6 +17,7 @@ public:
 
     void draw();
     void draw_pressed( void );
+	void draw_bar(float);
     void draw_text( int sunken );
 	void output(float x, float y, char *string);
 

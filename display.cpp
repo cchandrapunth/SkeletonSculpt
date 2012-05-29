@@ -10,6 +10,7 @@
 #include "vmmodel.h"
 #include "display.h"
 #include "paint.h"
+#include "print_screen.h"
 
 //resolution
 static int g_nXRes = 640, g_nYRes = 480;
@@ -21,6 +22,7 @@ bool stateGrabL = false;		//0- not grab, 1 - already in grab
 bool switchHand = false;		//right hand perform rotation
 
 bool static BACK_BUFF;		//display back buffer
+bool shape = false;
 
 void activate_rotate(){
 	switchHand = !switchHand;
@@ -118,6 +120,8 @@ void mode_selection(XnPoint3D* handPointList, hand_h* rhand){
 		
 	}
 
+	printscr();
+
 }
 
 
@@ -151,14 +155,17 @@ void checkRCursor(int func, hand_h* rhand){
 					recalNormal();
 				}
 				else{
+					
 					//grab group of mesh
 					if(sListContain(getSelection()) >= 0 ){
+						shape = true;
 						interpolate(getsList(), rhand->gettranslateX(), 
 							rhand->gettranslateY(), rhand->gettranslateZ(), getRotX(), getRotY());
 						recalNormal();
 					}
 					//grab one mesh
 					else if(getSelection() >= 0 && getSelection() < getFaceListSize()){
+						shape = true;
 						interpolate(getSelection(), rhand->gettranslateX(), 
 							rhand->gettranslateY(), rhand->gettranslateZ(), getRotX(), getRotY());
 						recalNormal();
@@ -167,11 +174,15 @@ void checkRCursor(int func, hand_h* rhand){
 			}
 			//paint
 			else if(func ==2){
-
+				if(switchHand){
+					commitScene(rhand->gettranslateX(), rhand->gettranslateY(), rhand->gettranslateZ());
+					recalNormal();
+				}else{
 					if(getSelection() >=0 && getSelection() < getFaceListSize()){
 						//printf("selection ->%d\n", getSelection());
 						paintMesh(getSelection(), getBrushColor());
-					}		
+					}
+				}
 			}
 
 			//selection?
@@ -193,10 +204,13 @@ void checkRCursor(int func, hand_h* rhand){
 			setNullSelection(); //show no mesh response when hand released
 
 			//undo
-			if(func == 1) copy_vmmodel(); 
+			if(func == 1 && shape) {
+				copy_vmmodel(); 
+				shape = false;
+			}
 		}
 	}
-
+	
 
 }
 
@@ -231,7 +245,7 @@ void checkLCursor(hand_h* lhand){
 }
 
 void preview_scene(){
-	commitScene(2, 0, 0);
+	commitScene(1, 0, 0);
 	drawVMModel();
 	glutSwapBuffers();
 }

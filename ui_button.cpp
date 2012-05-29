@@ -111,7 +111,8 @@ void ui_button::draw_text(int sunken){
 
   if(sunken == 1) {
 	glColor3f(0.0, 0.0, 0.0);
-	output(x+w/5, y+h/4, (char*) butt_name);
+	
+	output(x+w/3, y+h/4, (char*) butt_name);
 	glColor3f(1.0,1.0,1.0);
   }
   else{ //dont' wrtie name for color button
@@ -132,7 +133,8 @@ void ui_button::draw_text(int sunken){
 		  //write name for general button
 		 
 		  glColor3f(0.0, 0.0, 0.0);
-		  output(x+w/5, y+h/4, (char*) butt_name);
+		  float len = strlen(butt_name)*0.1;
+		  output(x+w/3, y+h/4, (char*) butt_name);
 		  glColor3f(0.3,0.3,0.3);
 	  }
   }
@@ -144,6 +146,13 @@ void ui_button::draw_text(int sunken){
 
 }
 
+void ui_button::draw_bar(float a){
+  float perc = min(a/60*w, w);
+  glBegin( GL_QUADS );
+  glVertex3f( x+0.02, y+0.02, ui_depth+0.1);         glVertex3f( x+perc, y+0.02, ui_depth+0.1);
+  glVertex3f( x+perc, y+h-0.02, ui_depth+0.1);     glVertex3f( x+0.02, y+h-0.02, ui_depth+0.1);
+  glEnd();
+}
 
 void ui_button::output(float x, float y, char *string)
 {

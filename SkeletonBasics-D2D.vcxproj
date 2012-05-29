@@ -132,6 +132,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <AdditionalIncludeDirectories>$(SolutionDir)\Speech\Include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -139,6 +140,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>kernel32.lib;user32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;Kinect10.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)\Speech\Lib</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -175,6 +177,8 @@
     <ClInclude Include="paint.h" />
     <ClInclude Include="Pair.h" />
     <ClInclude Include="picking.h" />
+    <ClInclude Include="printsrn.h" />
+    <ClInclude Include="print_screen.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="SkeletonBasics.h" />
     <ClInclude Include="smoothing.h" />
@@ -201,6 +205,8 @@
     <ClCompile Include="paint.cpp" />
     <ClCompile Include="Pair.cpp" />
     <ClCompile Include="picking.cpp" />
+    <ClCompile Include="printsrn.cpp" />
+    <ClCompile Include="print_screen.cpp" />
     <ClCompile Include="SkeletonBasics.cpp" />
     <ClCompile Include="smoothing.cpp" />
     <ClCompile Include="ui.cpp" />

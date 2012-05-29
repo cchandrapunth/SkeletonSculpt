@@ -16,6 +16,10 @@
 #include "drawbackground.h"
 #include "mode.h" 
 #include "display.h"
+
+#include <sapi.h>
+#include <sphelper.h>
+
 //float hand_l_x =0, hand_l_y =0, hand_l_z =0;
 //float hand_r_x =0, hand_r_y =0, hand_r_z =0;
 
@@ -198,6 +202,8 @@ void NUIhand(){
 	*/	
 }
 
+
+
 void display(void) {
 
 	if(handPointList == NULL){
@@ -213,6 +219,7 @@ void display(void) {
 
 		//display
 		//NUIhand();
+
 		mode_selection(handPointList, rhand);
 
 		
@@ -428,8 +435,8 @@ void uiInit(){
 
 	//main menu button
 	Master_ui->add_button("Menu", left+(right-left)/15, bottom+0.5, 0.5, 0.3, push_menu);
-	Master_ui->add_button("-", left+(right-left)/15, bottom+0.8, 0.3, 0.3, down);
-	Master_ui->add_button("+", left+(right-left)/15, bottom+1.1, 0.3, 0.3, up);
+	Master_ui->add_button("-", left+(right-left)/15, bottom+0.8, 0.4, 0.3, down);
+	Master_ui->add_button("+", left+(right-left)/15, bottom+1.1, 0.4, 0.3, up);
 
 	//Master_ui->add_button("reset", right-(right-left)/5, bottom+0.5, 0.5, 0.3, reload);	//if remove, fix ui.cpp (count)
 	//Master_ui->add_button("select", right-(right-left)/5, bottom+0.8, 0.5, 0.3, selectionMode);
@@ -459,6 +466,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 	uiInit();
 	createGLUTMenus();
 	glutMainLoop();
-                      
+
+	
 	return 0;
 }

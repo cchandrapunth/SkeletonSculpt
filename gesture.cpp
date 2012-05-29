@@ -2,7 +2,7 @@
 #include <gl/glut.h>
 #include <stdio.h>
 #include "XnPoint3D.h"
-#include "NuiApi.h"
+
 #include "hand_history.h"
 #include "vertex.h"
 #include "gesture.h"
@@ -14,7 +14,18 @@
 #include "smoothing.h"
 #include <map>
 #include <list>
+#include "printsrn.h"
 
+//for kinect sdk APIs
+#include "NuiApi.h"
+
+// For speech APIs
+// NOTE: To ensure that application compiles and links against correct SAPI versions (from Microsoft Speech
+//       SDK), VC++ include and library paths should be configured to list appropriate paths within Microsoft
+//       Speech SDK installation directory before listing the default system include and library directories,
+//       which might contain a version of SAPI that is not appropriate for use together with Kinect sensor.
+#include <sapi.h>
+#include <sphelper.h>
 
 #define GESTURE_TO_USE "Click" 
 #define HANDDEPTH 60 //in mm
@@ -65,6 +76,22 @@ static const int cDepthHeight = 480;
 
 int sump = 0;
 int n = 0; //number of points
+
+		    // Speech grammar
+ISpRecoGrammar*         m_pSpeechGrammar;
+
+ISpObjectToken *pEngineToken = NULL;
+		// Stream given to speech recognition engine
+ISpStream*              m_pSpeechStream;
+		// Speech recognizer
+ISpRecognizer*          m_pSpeechRecognizer;
+
+		// Speech recognizer context
+ISpRecoContext*         m_pSpeechContext;
+
+INuiAudioBeam*      pNuiAudioSource = NULL;
+
+    HANDLE                  m_hSpeechEvent;
 //-----------------------------------------------------
 //					   LOG
 //-----------------------------------------------------
@@ -283,21 +310,22 @@ void XN_CALLBACK_TYPE Hand_Destroy(HandsGenerator& generator,XnUserID nId, XnFlo
 
 int NUIinit()
 {
+	pFile = fopen("depthmap.txt", "w");
 	hr = NuiInitialize( NUI_INITIALIZE_FLAG_USES_DEPTH | NUI_INITIALIZE_FLAG_USES_SKELETON | NUI_INITIALIZE_FLAG_USES_COLOR);
 	if( FAILED( hr ) )
 	{
 		system("pause");
-
+		fprintf(pFile,"sensor fail" );
 	}
-	else
-	{ 
+	
+	else{
+		fprintf(pFile, "sensor sucess\n");
+
 		// m_hNextSkeletonEvent = NULL;
 		//m_hNextSkeletonEvent = CreateEvent( NULL, TRUE, FALSE, NULL );
 
 		NUI_SKELETON_FRAME SkeletonFrame;
 		NuiSkeletonTrackingEnable;
-
-		//NuiSkeletonTrackingEnable( m_hNextSkeletonEvent, 0 );
 
 		hr = NuiImageStreamOpen(
 			NUI_IMAGE_TYPE_DEPTH,
@@ -309,16 +337,18 @@ int NUIinit()
 
 		m_depthRGBX = new int[cDepthWidth*cDepthHeight];
 		histogram = new int[150];
-	}
 
+	}
 	//debuging
-	pFile = fopen("depthmap.txt", "w");	
+
 	pFile1 = fopen("newhand.txt", "w");	
 	pFile2 = fopen("depthdata.txt", "w");
 
 	
+                      
 	return 0;
 }
+
 
 void extract_Skeleton(){
 	HRESULT hr =NuiSkeletonGetNextFrame( 0, &SkeletonFrame );
@@ -516,7 +546,7 @@ int draw_map(XnPoint3D* handPointList, XnPoint3D palm){
 
 		float handPixelX = convertPalmPixelX(palm.X);
 		float handPixelY = convertPalmPixelY(palm.Y);
-		float wristPixelY = convertPalmPixelY(w_History.Y);
+		float wristPixelY = max(convertPalmPixelY(w_History.Y), handPixelY+50.0);
 		//restart the counting
 		n = 0;
 
@@ -687,7 +717,8 @@ void analyse_histogram(){
 		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, buff[i]);
 	}*/	
 
-	if(var  > 350){
+	
+	if(var  > 500){
 		smoothHand(true);
 		RGRAB = isGrabsmooth();
 	}else {

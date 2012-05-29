@@ -40,7 +40,17 @@ void ui::draw(){
 	}
 
 }
+void pout(float x, float y, char *string)
+{
+  void *font = GLUT_BITMAP_TIMES_ROMAN_24;
+  int len, i;
 
+  glRasterPos3f(x, y, ui_depth);
+  len = (int) strlen(string);
+  for (i = 0; i < len; i++) {
+    glutBitmapCharacter(font, string[i]);
+  }
+}
 //-------------------check_click------------------
 void ui::check_click(float hand_x, float hand_y){
 	
@@ -54,8 +64,13 @@ void ui::check_click(float hand_x, float hand_y){
 		if(hand_x > b->x && hand_x < b->x+width && hand_y > b->y && hand_y < b->y+height){
 			b->hand_down_handler(hand_x, hand_y);
 			b->wait = b->wait+1;
-			draw_circle(hand_x, hand_y, b->wait);
-			if(b->wait >24 && b-> wait < 35){
+			//draw_circle(hand_x, hand_y, b->wait);
+			//draw bars
+			b->draw_bar(b->wait);
+			//char buff[256];
+			//sprintf(buff, "%d", b->wait);
+			//pout(0, 0, buff);
+			if(b->wait >60 && b-> wait < 120){
 				b->wait = b->wait+1;
 				if(b->currently_inside) {
 					//show panel

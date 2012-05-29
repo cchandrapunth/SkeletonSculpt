@@ -10,6 +10,7 @@
 #include "log.h"
 #include "picking.h"
 #include "paint.h"
+#include "print_screen.h"
 
 #define UNDORANGE 15
 using namespace std;
@@ -105,7 +106,7 @@ void import_vm(){
 	
 	if(LOAD_FROM_ORIGIN){
 		//subDivide
-		for(int k=0; k< 3; k++){
+		for(int k=0; k< 5; k++){
 			subDivide(true);
 		}
 	}
@@ -825,6 +826,7 @@ void interpolate(int id, float transx, float transy, float transz, int rotx, int
 
 	softselection(id, vectorx/100, vectory/100, vectorz/100);
 
+	/*
 	//check size to subdivide
 	int do_divide = 0;
 			
@@ -847,7 +849,7 @@ void interpolate(int id, float transx, float transy, float transz, int rotx, int
 		print_debug();
 		printf("subdivide\n");
 	}
-
+	*/
 	//recalculate face normal and vertex normal
 	recalNormal();
 	
@@ -1184,9 +1186,11 @@ void copy_vmmodel(){
 		//fprintf(mFile,"%d\t %f\t %f\t %f\n", i, v->x, v->y, v->z);
 		exvertexList[numMod].push_back(*v);
 	}
-	printf("copy model: %d\n", numMod);
+	fprintf(pFile3, "copy model: %d\n", numMod);
 
-	//fprintf(mFile,"---------------------------------------------------\n");
+	//fprintf(pFile3,"---------------------------------------------------\n");
+	char undo[] = "copy";
+	set_text(undo);
 }
 
 //restore ex-data to the data structure
