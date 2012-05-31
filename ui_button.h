@@ -35,7 +35,7 @@ public:
 	ui_button(const char *name, long id, float begin_x, float begin_y, cb_function cb);
 	ui_button(void){ common_init(); };
 
-private:
+public:
     void common_init(void) {
         h  = 60;
         w  = 100;

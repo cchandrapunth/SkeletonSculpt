@@ -298,7 +298,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
 	glutInitWindowPosition(200, 0);
 	glutInitWindowSize(w,h);
-	glutCreateWindow("hello");
+	glutCreateWindow("Sculpteo");
 
 	glutKeyboardFunc(processNormalKeys);
 	glutReshapeFunc(reshape);

@@ -20,6 +20,8 @@ ui_button::ui_button(const char *name, long id, float begin_x, float begin_y, fl
 	y = begin_y;
 	callback = cb;
 
+	execute = true;
+	activate = true;
 	wait = 0;
 }
 
@@ -33,6 +35,8 @@ ui_button::ui_button(const char *name, long id, float begin_x, float begin_y, cb
 	y = begin_y;
 	callback = cb;
 
+	execute = true;
+	activate = true;
 	wait = 0;
 }
 
@@ -160,6 +164,7 @@ void ui_button::output(float x, float y, char *string)
 {
   int len, i;
 
+  glColor3f(0,0,0);
   glRasterPos3f(x, y, ui_depth);
   len = (int) strlen(string);
   for (i = 0; i < len; i++) {

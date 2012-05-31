@@ -115,8 +115,7 @@ float getAspect(){
 }
 
 void set_print_training(bool g){
-	if(!g)	fprintf(pFile2, "********************GRAB\n");
-	else	fprintf(pFile2, "*********************release\n");
+
 }
 
 bool hasTwoHands(){
@@ -310,16 +309,16 @@ void XN_CALLBACK_TYPE Hand_Destroy(HandsGenerator& generator,XnUserID nId, XnFlo
 
 int NUIinit()
 {
-	pFile = fopen("depthmap.txt", "w");
+	//pFile = fopen("depthmap.txt", "w");
 	hr = NuiInitialize( NUI_INITIALIZE_FLAG_USES_DEPTH | NUI_INITIALIZE_FLAG_USES_SKELETON | NUI_INITIALIZE_FLAG_USES_COLOR);
 	if( FAILED( hr ) )
 	{
 		system("pause");
-		fprintf(pFile,"sensor fail" );
+		//fprintf(pFile,"sensor fail" );
 	}
 	
 	else{
-		fprintf(pFile, "sensor sucess\n");
+		//fprintf(pFile, "sensor sucess\n");
 
 		// m_hNextSkeletonEvent = NULL;
 		//m_hNextSkeletonEvent = CreateEvent( NULL, TRUE, FALSE, NULL );
@@ -341,8 +340,8 @@ int NUIinit()
 	}
 	//debuging
 
-	pFile1 = fopen("newhand.txt", "w");	
-	pFile2 = fopen("depthdata.txt", "w");
+	//pFile1 = fopen("newhand.txt", "w");	
+	//pFile2 = fopen("depthdata.txt", "w");
 
 	
                       
@@ -401,8 +400,8 @@ void extract_Skeleton(){
 					
 				w_History = *ptProjective2;
 				
-				fprintf(pFile1, "HandRight X=%4.2f  Y=%4.2f  Z=%4.2f  | convert %.1f %.1f \n",ptProjective->X,ptProjective->Y,ptResolution->Z, 
-																	ptResolution->X, ptResolution->Y);    
+				//fprintf(pFile1, "HandRight X=%4.2f  Y=%4.2f  Z=%4.2f  | convert %.1f %.1f \n",ptProjective->X,ptProjective->Y,ptResolution->Z, 
+																	//ptResolution->X, ptResolution->Y);    
 			
 			}
 			//////////////////////////////////////////////////////////////        
@@ -663,14 +662,14 @@ void analyse_histogram(){
 		if(count > peek) peek = count;
 		sump += pow(count, 2.0); 
 
-		fprintf(pFile2, "%d\t", i);
+		//fprintf(pFile2, "%d\t", i);
 		for(int j=0; j< count; j++){
-			fprintf(pFile2, "|");
+			//fprintf(pFile2, "|");
 		}
-		fprintf(pFile2, " %d\n", count);
+		//fprintf(pFile2, " %d\n", count);
 
 	}
-	fprintf(pFile2, "peek: %d\n", peek);
+	//fprintf(pFile2, "peek: %d\n", peek);
 	/*
 	if(peek  < 44){
 		smoothHand(true);
@@ -705,7 +704,7 @@ void analyse_histogram(){
 		var_history.pop_front(); 
 	}
 
-	fprintf(pFile2, "mean %f \t var: %f\n", mean, var);
+	//fprintf(pFile2, "mean %f \t var: %f\n", mean, var);
 
 	float avg = 0; 
 	std::list<float>::const_iterator Iter;
@@ -962,8 +961,9 @@ bool estimateGrab(XnPoint3D* list, int n,
 	int yh = (int)(*highest).Y;
 
 	if(printDebug){
-		fprintf(pFile, "top = %d,%d ---> %d,%d\n", xr,yh,xl,yh );
-		fprintf(pFile, "bottom = %d,%d ---> %d,%d\n", xr,y,xl,y);
+		//fprintf(pFile, "top = %d,%d ---> %d,%d\n", xr,yh,xl,yh );
+		
+		//fprintf(pFile, "bottom = %d,%d ---> %d,%d\n", xr,y,xl,y);
 	}
 
 	XnPoint3D* ptr = list;
@@ -994,7 +994,7 @@ bool estimateGrab(XnPoint3D* list, int n,
 	denom = (xr-xl)*(y-yh);
 	float percent =  ((float)nom)/denom;
 	if(denom != 0 && printDebug) {
-		fprintf(pFile, "estimate hand point = %d, %d, %f\n", nom, denom, ((float)nom)/denom);
+		//fprintf(pFile, "estimate hand point = %d, %d, %f\n", nom, denom, ((float)nom)/denom);
 	}
 
 	//estimate hand area > 0.5 => grab

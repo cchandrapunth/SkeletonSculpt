@@ -47,8 +47,8 @@ int countDivide = 0;
 void import_vm(){
 
 	//pLog = new Log("vmmodel.log");
-	mFile = fopen("vmmodel.txt", "w");	
-	pFile3 = fopen("softselection.txt", "w");
+	//mFile = fopen("vmmodel.txt", "w");	
+	//pFile3 = fopen("softselection.txt", "w");
 
 	/*
 	ifstream indata;
@@ -179,6 +179,7 @@ void import_vm(){
 ///DEbug
 void print_debug(){
 		//pLog->Write("load model complete");
+	/*
 		fprintf(mFile, "\n=================================================\n");
 		fprintf(mFile, "\tvertexList :: nVertex = %d\n", vertexList.size());
 		fprintf(mFile,"=================================================\n");
@@ -193,6 +194,7 @@ void print_debug(){
 		for(int i=0; i< faceList.size(); i++){
 			faceList.at(i).printmesh(i, mFile);
 		}
+		*/
 }
 
 void export_vm(){
@@ -478,8 +480,8 @@ void internalSubDivide(int meshId){
 	center->addFaceId(faceList.size()+1);
 	vertexList.push_back(center);
 
-	fprintf(mFile, "NEW VERTEX\n");
-	fprintf(mFile, "%d: %f %f %f\n", meshId, center->x, center->y, center->z);
+	//fprintf(mFile, "NEW VERTEX\n");
+	//fprintf(mFile, "%d: %f %f %f\n", meshId, center->x, center->y, center->z);
 
 	//same color
 	m2.colorId = m.colorId;
@@ -728,7 +730,7 @@ void divideHalf(int ind1, int ind2, int newind, int meshid){
 	if(tri.ind1 != ind1 && tri.ind1 != ind2) ind3 = tri.ind1;
 	else if(tri.ind2 != ind1 && tri.ind2 != ind2) ind3 = tri.ind2;
 	else ind3 = tri.ind3;
-	fprintf(mFile, "orginal %d |\t", meshid);
+	//fprintf(mFile, "orginal %d |\t", meshid);
 
 	//divide by half 
 	//tri1: ind3, newind, ind2 (old)
@@ -744,7 +746,7 @@ void divideHalf(int ind1, int ind2, int newind, int meshid){
 	faceList.at(friendid).colorId = 4;
 
 
-	fprintf(mFile,"modify tri %d |\t", friendid);
+	//fprintf(mFile,"modify tri %d |\t", friendid);
 
 	//tri2 ind3, ind1, newind
 	tri = new mesh(ind3, ind2, newind);
@@ -761,7 +763,7 @@ void divideHalf(int ind1, int ind2, int newind, int meshid){
 	//color
 	tri.colorId = 3;
 
-	fprintf(mFile, "new tri %d\n", triId);
+	//fprintf(mFile, "new tri %d\n", triId);
 	faceList.push_back(tri);
 
 	//newpoint add faceId
@@ -787,7 +789,7 @@ void indiv_subdivide(){
 			divideHalf(m.ind3, m.ind1, newv[2], id);
 		}
 	}
-	fprintf(mFile, "\n<<<<<-------------AFTER SUBDIVIDE------------->>>>\n");
+	//fprintf(mFile, "\n<<<<<-------------AFTER SUBDIVIDE------------->>>>\n");
 	print_debug();
 
 	reassignFaceId();
@@ -881,7 +883,7 @@ void interpolate(int id, float transx, float transy, float transz, int rotx, int
 		vectorx = 0;
 		vectory = 0;
 	}
-	fprintf(pFile3, "x= %f, y=%f, z=%f\n", vectorx, vectory, vectorz);
+	//fprintf(pFile3, "x= %f, y=%f, z=%f\n", vectorx, vectory, vectorz);
 
 	softselection(id, vectorx/100, vectory/100, vectorz/100);
 
@@ -1245,7 +1247,7 @@ void copy_vmmodel(){
 		//fprintf(mFile,"%d\t %f\t %f\t %f\n", i, v->x, v->y, v->z);
 		exvertexList[numMod].push_back(*v);
 	}
-	fprintf(pFile3, "copy model: %d\n", numMod);
+	//fprintf(pFile3, "copy model: %d\n", numMod);
 
 	//fprintf(pFile3,"---------------------------------------------------\n");
 
